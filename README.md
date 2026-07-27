@@ -28,6 +28,9 @@ Plus optional QC (on by default):
 - **MultiQC** aggregating FastQC + cutadapt trimming stats, plus a **proseq2.0
   read-summary table** (input → pass-QC → mappable → mappable-excl-rRNA per
   sample), into one `multiqc_report.html`.
+- **Strand inference** (opt-in, `--gene_bed`) — RSeQC `infer_experiment.py` on a
+  BAM subsample checks whether the data's orientation matches the configured
+  strand flags and **warns** on a mismatch (see *Strand inference* below).
 
 ## Requirements
 
@@ -82,6 +85,7 @@ cached results after an interruption.
 | CLI flag (original)      | Nextflow param            | Default                         |
 |--------------------------|---------------------------|---------------------------------|
 | `-SE` / `-PE`            | *auto-detected per sample from `fastq_2`* | —              |
+| *(new preset)*           | `--assay {GRO\|PRO\|ChRO}` | none (sets the geometry below) |
 | `-G` / `-P`              | `--se_read`               | `RNA_5prime` (`RNA_3prime`=P)   |
 | `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R2_5prime`              |
 | `-5` / `-3` (`--map5`)   | `--map5`                  | `true`                          |
@@ -96,6 +100,7 @@ cached results after an interruption.
 | `--MAP_LENGTH`           | `--map_length`            | `0` (off)                       |
 | *(new)*                  | `--skip_fastqc`           | `false`                         |
 | *(new)*                  | `--skip_multiqc`          | `false`                         |
+| *(new)*                  | `--gene_bed`              | none (enables strand inference) |
 | `--thread`               | *per-process `task.cpus`* | via resource labels             |
 | `-T` / `-O`              | Nextflow `work/` / `--outdir` | `./results`                 |
 
@@ -111,10 +116,40 @@ results/
 │              <sample>_{plus,minus}.rpm.bw (RPM-normalized)
 ├── qc/        <sample>.QC.log, <sample>.align.log, <sample>.prinseq-pcrDups.gd
 │              <sample>.cutadapt.log, proseq_read_stats_mqc.tsv
-│   └── fastqc/{raw,trim}/  per-sample FastQC reports
+│   ├── fastqc/{raw,trim}/  per-sample FastQC reports
+│   └── strand/            <sample>.infer_experiment.txt, <sample>.strand_check.txt
 ├── multiqc/   multiqc_report.html + multiqc_data/
 └── pipeline_info/  execution report, timeline, trace, DAG
 ```
+
+## Assay presets
+
+`--assay {GRO|PRO|ChRO}` sets the library geometry so you specify the one thing
+you know — the protocol — instead of the low-level flags:
+
+| `--assay` | SE (`--se_read`) | PE (`--rna3` → `--rna5`)      | captures    |
+|-----------|------------------|-------------------------------|-------------|
+| `GRO`     | `RNA_5prime` (`-G`) | `R2_5prime` → `R1_5prime`  | RNA 5′ end  |
+| `PRO`     | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
+| `ChRO`    | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
+
+Any explicit flag (`--se_read`, `--rna3`, `--rna5`, `--map5`, `--opposite_strand`)
+**overrides** the preset. `--map5`/`--opposite_strand` are reporting choices and
+are left at their defaults (`true`/`false`) — the preset does not change them.
+
+## Strand inference
+
+The read orientation is fixed by the geometry above: the primary read (SE read,
+or R1 in PE) is *sense* to genes iff the RNA 5′ end sits at that read's 5′ end.
+Which end to *report* (`--map5`) and `--opposite_strand` are experiment choices
+and can't be inferred from data.
+
+Pass `--gene_bed <BED12>` to have RSeQC `infer_experiment.py` (run on a BAM
+subsample) check the data against your configured geometry. Per sample you get
+`qc/strand/<sample>.strand_check.txt` with a `VERDICT: PASS|WARN|UNDETERMINED`,
+and the raw RSeQC output flows into the MultiQC report. A `WARN` means the data's
+orientation disagrees with your flags (e.g. swapped R1/R2, or wrong assay) — the
+pipeline still completes; it does not auto-change your settings.
 
 ## Profiles
 
