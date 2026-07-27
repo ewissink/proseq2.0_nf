@@ -1,0 +1,6 @@
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+results/
+*.pyc
