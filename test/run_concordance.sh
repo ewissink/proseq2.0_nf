@@ -58,7 +58,7 @@ mkdir -p "$OUTDIR"
 READSDIR="$OUTDIR/reads"; mkdir -p "$READSDIR"
 
 # ---- map assay+layout(+report) to matched bash / NF flags ----
-map_flags() {  # $1=assay $2=layout $3=report ; sets BASH_FLAGS, NF_FLAGS
+map_flags() {  # $1=assay $2=layout $3=report $4=strand ; sets BASH_FLAGS, NF_FLAGS
   case "$1:$2" in
     GRO:SE)          BASH_FLAGS="-SE -G";               NF_FLAGS="--assay GRO"  ;;
     PRO:SE)          BASH_FLAGS="-SE -P";               NF_FLAGS="--assay PRO"  ;;
@@ -70,23 +70,43 @@ map_flags() {  # $1=assay $2=layout $3=report ; sets BASH_FLAGS, NF_FLAGS
     [ "$2" = "PE" ] || { echo "ERROR: report=3prime is PE-only ($1:$2)" >&2; return 1; }
     BASH_FLAGS="$BASH_FLAGS -3"; NF_FLAGS="$NF_FLAGS --map5 false"
   fi
+  if [ "$4" = "opposite" ]; then
+    [ "$2" = "PE" ] || { echo "ERROR: strand=opposite is PE-only ($1:$2)" >&2; return 1; }
+    BASH_FLAGS="$BASH_FLAGS -s"; NF_FLAGS="$NF_FLAGS --opposite_strand true"
+  fi
 }
 
-# ---- fetch + subsample (idempotent: skips if outputs exist) ----
+# ---- fetch + subsample ----
+# Subsampled reads are cached per accession+seed; each dataset row links its
+# <name> files to that cache, so an accession reused across rows (e.g. PE 5'/3'/
+# opposite) is fetched and subsampled only once. `accession` may be an SRR id
+# (fetched) or a local prefix: <prefix>.fastq.gz (SE) / <prefix>_R{1,2}.fastq.gz (PE).
 subsample() {  # $1=name $2=layout $3=accession
-  local name="$1" layout="$2" acc="$3"
+  local name="$1" layout="$2" acc="$3" key="${3##*/}"
   if [ "$layout" = "SE" ]; then
-    [ -s "$READSDIR/${name}.fastq.gz" ] && { echo "  reads cached"; return; }
-    fasterq-dump --split-files -O "$READSDIR" "$acc"
-    seqtk sample -s"$SEED" "$READSDIR/${acc}.fastq" "$READS" | gzip > "$READSDIR/${name}.fastq.gz"
-    rm -f "$READSDIR/${acc}.fastq"
+    local sub="$READSDIR/${key}.sub.fastq.gz"
+    if [ ! -s "$sub" ]; then
+      local raw
+      if   [ -s "${acc}.fastq.gz" ]; then raw="${acc}.fastq.gz"
+      elif [ -s "${acc}.fastq" ];    then raw="${acc}.fastq"
+      else fasterq-dump --split-files -O "$READSDIR" "$acc"; raw="$READSDIR/${acc}.fastq"; fi
+      seqtk sample -s"$SEED" "$raw" "$READS" | gzip > "$sub"
+      case "$raw" in "$READSDIR/"*) rm -f "$raw" ;; esac   # only remove what we fetched
+    else echo "  reads cached (${key})"; fi
+    ln -sf "$(basename "$sub")" "$READSDIR/${name}.fastq.gz"
   else
-    [ -s "$READSDIR/${name}_R1.fastq.gz" ] && { echo "  reads cached"; return; }
-    fasterq-dump --split-files -O "$READSDIR" "$acc"
-    # SAME seed on both mates keeps pairs matched
-    seqtk sample -s"$SEED" "$READSDIR/${acc}_1.fastq" "$READS" | gzip > "$READSDIR/${name}_R1.fastq.gz"
-    seqtk sample -s"$SEED" "$READSDIR/${acc}_2.fastq" "$READS" | gzip > "$READSDIR/${name}_R2.fastq.gz"
-    rm -f "$READSDIR/${acc}_1.fastq" "$READSDIR/${acc}_2.fastq"
+    local s1="$READSDIR/${key}.sub_R1.fastq.gz" s2="$READSDIR/${key}.sub_R2.fastq.gz"
+    if [ ! -s "$s1" ]; then
+      local r1 r2
+      if [ -s "${acc}_R1.fastq.gz" ]; then r1="${acc}_R1.fastq.gz"; r2="${acc}_R2.fastq.gz"
+      else fasterq-dump --split-files -O "$READSDIR" "$acc"; r1="$READSDIR/${acc}_1.fastq"; r2="$READSDIR/${acc}_2.fastq"; fi
+      # SAME seed on both mates keeps pairs matched
+      seqtk sample -s"$SEED" "$r1" "$READS" | gzip > "$s1"
+      seqtk sample -s"$SEED" "$r2" "$READS" | gzip > "$s2"
+      case "$r1" in "$READSDIR/"*) rm -f "$r1" "$r2" ;; esac
+    else echo "  reads cached (${key})"; fi
+    ln -sf "$(basename "$s1")" "$READSDIR/${name}_R1.fastq.gz"
+    ln -sf "$(basename "$s2")" "$READSDIR/${name}_R2.fastq.gz"
   fi
 }
 
@@ -144,12 +164,13 @@ echo "Datasets:   $DATASETS"
 echo
 
 fails=0
-while read -r name assay layout accession report; do
+while read -r name assay layout accession report strand; do
   [ -z "${name:-}" ] && continue
   case "$name" in \#*) continue ;; esac
   report="${report:-5prime}"
-  echo "=== $name  ($assay $layout report=$report, $accession) ==="
-  map_flags "$assay" "$layout" "$report"
+  strand="${strand:-same}"
+  echo "=== $name  ($assay $layout report=$report strand=$strand, $accession) ==="
+  map_flags "$assay" "$layout" "$report" "$strand"
   echo "  bash: $BASH_FLAGS"
   echo "  nf:   $NF_FLAGS"
   subsample "$name" "$layout" "$accession"

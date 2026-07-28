@@ -5,14 +5,16 @@
 #   layout      SE | PE
 #   accession   SRA run accession (SRR...) to fetch, OR a local path prefix (see README)
 #   report      5prime (default) | 3prime   (3prime is PE-only; report the RNA 3' end)
+#   strand      same (default)   | opposite (opposite is PE-only; -s / --opposite_strand)
 #
 # Find data on GEO/SRA (search the Danko lab or the assay + organism), e.g.:
 #   - Human/mouse GRO-seq, PRO-seq, ChRO-seq series on GEO -> "SRA Run Selector" -> SRR ids
 #   - Pick libraries WITHOUT shared i7 barcodes (proseq2.0 requires distinct i7 for PE).
 # The accessions below are PLACEHOLDERS — replace and VERIFY the layout/assay yourself.
 #
-#name              assay  layout  accession     report
-gro_se             GRO    SE      SRRXXXXXXX     5prime
-pro_se             PRO    SE      SRRXXXXXXX     5prime
-prochro_pe_5p      ChRO   PE      SRRXXXXXXX     5prime
-prochro_pe_3p      ChRO   PE      SRRXXXXXXX     3prime
+#name              assay  layout  accession     report   strand
+gro_se             GRO    SE      SRRXXXXXXX     5prime   same
+pro_se             PRO    SE      SRRXXXXXXX     5prime   same
+prochro_pe_5p      ChRO   PE      SRRXXXXXXX     5prime   same
+prochro_pe_3p      ChRO   PE      SRRXXXXXXX     3prime   same
+prochro_pe_opp     ChRO   PE      SRRXXXXXXX     5prime   opposite

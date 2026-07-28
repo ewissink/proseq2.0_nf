@@ -40,16 +40,21 @@ Edit `datasets.tsv` and fill in real SRA run accessions (the shipped ones are
 placeholders). Suggested minimal matrix — pick mouse **or** human, stay consistent
 with your index:
 
-| name           | assay | layout | report | why |
-|----------------|-------|--------|--------|-----|
-| `gro_se`       | GRO   | SE     | 5prime | GRO-seq 5′ path (`-G`) |
-| `pro_se`       | PRO   | SE     | 5prime | PRO-seq path (`-P`) |
-| `prochro_pe_5p`| ChRO  | PE     | 5prime | PE report-5′ (`--map5 true`) |
-| `prochro_pe_3p`| ChRO  | PE     | 3prime | PE report-3′ (`--map5 false`) — reuse the same PE accession |
+| name           | assay | layout | report | strand   | why |
+|----------------|-------|--------|--------|----------|-----|
+| `gro_se`       | GRO   | SE     | 5prime | same     | GRO-seq 5′ path (`-G`) |
+| `pro_se`       | PRO   | SE     | 5prime | same     | PRO-seq path (`-P`) |
+| `prochro_pe_5p`| ChRO  | PE     | 5prime | same     | PE report-5′ (`--map5 true`) |
+| `prochro_pe_3p`| ChRO  | PE     | 3prime | same     | PE report-3′ (`--map5 false`) |
+| `prochro_pe_opp`| ChRO | PE     | 5prime | opposite | opposite-strand path (`-s`) |
+
+The last three rows can share **one** PE accession — reads are fetched/subsampled
+once and cached, then reused. `3prime` and `opposite` are PE-only.
 
 Find accessions via GEO → "SRA Run Selector" (search the Danko lab or the assay +
 organism). For PE, use libraries with **distinct i7 barcodes** (proseq2.0 requires
-that).
+that). `accession` may also be a **local prefix** — `<prefix>.fastq.gz` (SE) or
+`<prefix>_R1.fastq.gz`/`_R2.fastq.gz` (PE) — to skip the download.
 
 ## 4. Run
 
