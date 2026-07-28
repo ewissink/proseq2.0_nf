@@ -145,12 +145,15 @@ run_nf() {  # $1=name $2=layout ; uses NF_FLAGS
 }
 
 # ---- compare one strand's bigWig; returns 0 on exact match ----
+# Match by CONTENT, not filename: the original leaves a spurious _QC / _QC_end in
+# its output names (fragile name-mangling in proseq2.0.bsh), while the port names
+# them <sample>_<strand>.bw. So glob each side's raw (non-.rpm) bigWig for the strand.
 compare_bw() {  # $1=name $2=strand(plus|minus)
-  local name="$1" s="$2"
-  local a="$OUTDIR/$name/bash/${name}_${s}.bw"
-  local b="$OUTDIR/$name/nf/results/bigwig/${name}_${s}.bw"
-  if [ ! -f "$a" ] || [ ! -f "$b" ]; then
-    printf "    %-6s MISSING (bash:%s nf:%s)\n" "$s" "$( [ -f "$a" ] && echo ok || echo -- )" "$( [ -f "$b" ] && echo ok || echo -- )"
+  local name="$1" s="$2" a b
+  a=$(ls "$OUTDIR/$name/bash/"*_"${s}.bw" 2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
+  b=$(ls "$OUTDIR/$name/nf/results/bigwig/"*_"${s}.bw" 2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
+  if [ -z "$a" ] || [ -z "$b" ]; then
+    printf "    %-6s MISSING (bash:%s nf:%s)\n" "$s" "$( [ -n "$a" ] && echo ok || echo -- )" "$( [ -n "$b" ] && echo ok || echo -- )"
     return 1
   fi
   local ta="$OUTDIR/$name/_${s}_bash.bg" tb="$OUTDIR/$name/_${s}_nf.bg"
