@@ -13,8 +13,8 @@
 # The accessions below are PLACEHOLDERS — replace and VERIFY the layout/assay yourself.
 #
 #name              assay  layout  accession     report   strand
-gro_se             GRO    SE      SRRXXXXXXX     5prime   same
-pro_se             PRO    SE      SRRXXXXXXX     5prime   same
-prochro_pe_5p      ChRO   PE      SRRXXXXXXX     5prime   same
-prochro_pe_3p      ChRO   PE      SRRXXXXXXX     3prime   same
-prochro_pe_opp     ChRO   PE      SRRXXXXXXX     5prime   opposite
+gro_se             GRO    SE      SRR513507     5prime   same
+pro_se             PRO    SE      SRR3189197     5prime   same
+pro_pe_5p      PRO   PE      SRR11607571     5prime   same
+pro_pe_3p      PRO   PE      SRR11607571     3prime   same
+pro_pe_opp     PRO   PE      SRR11607571     5prime   opposite
