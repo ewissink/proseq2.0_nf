@@ -1,0 +1,20 @@
+name: proseq2.0-nf-test
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # everything the pipeline needs (so the ORIGINAL bash + the NF port use identical
+  # tool versions — essential for a fair old-vs-new concordance comparison)
+  - cutadapt=4.4
+  - seqtk=1.4
+  - prinseq=0.20.4
+  - bwa=0.7.17
+  - samtools=1.9
+  - bedtools=2.28.0
+  - bedops=2.4.41
+  - ucsc-bedgraphtobigwig=445
+  # test-only extras
+  - sra-tools=3.0.10          # prefetch / fasterq-dump
+  - ucsc-bigwigtobedgraph=445 # bigWig -> bedGraph for the diff
+  - wget
