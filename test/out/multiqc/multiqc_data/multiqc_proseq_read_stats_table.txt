@@ -1,0 +1,6 @@
+Sample	Seq type	Input (reads/pairs)	Pass QC	Mappable	Mappable (excl. rRNA)
+gro_se	SE	1000000	746342	37060	36136
+pro_pe_3p	PE	1000000	992853	412401	403720
+pro_pe_5p	PE	1000000	992853	412401	403720
+pro_pe_opp	PE	1000000	992853	412401	403720
+pro_se	SE	1000000	891939	478371	470886

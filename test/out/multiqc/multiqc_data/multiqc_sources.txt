@@ -1,0 +1,8 @@
+Module	Section	Sample Name	Source
+Cutadapt	all_sections	dm6	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
+Cutadapt	all_sections	pro_pe_3p_R1	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
+Cutadapt	all_sections	pro_pe_3p_R2	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
+Cutadapt	all_sections	pro_pe_3p_trim_R1	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
+Cutadapt	all_sections	pro_pe_3p_untrim_R1	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
+Cutadapt	all_sections	pro_pe_3p_trim_R2	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
+Cutadapt	all_sections	pro_pe_3p_untrim_R2	/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log
