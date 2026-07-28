@@ -1,0 +1,2166 @@
+{
+    "report_multiqc_command": "/programs/multiqc-1.31/bin/multiqc test/out/ -o test/out/multiqc -f --ignore */work/*",
+    "report_data_sources": {
+        "Cutadapt": {
+            "all_sections": {
+                "dm6": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log",
+                "pro_pe_3p_R1": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log",
+                "pro_pe_3p_R2": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log",
+                "pro_pe_3p_trim_R1": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log",
+                "pro_pe_3p_untrim_R1": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log",
+                "pro_pe_3p_trim_R2": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log",
+                "pro_pe_3p_untrim_R2": "/local/workdir/emw97/proseq2.0_nf/test/out/pro_pe_3p/bash/proseq2.0_Run_1HgKN6zTlRxkUzOZux8tE2P9wGljTl5I.log"
+            }
+        }
+    },
+    "report_general_stats_data": {},
+    "report_general_stats_headers": {},
+    "report_creation_date": "2026-07-28, 15:53 EDT",
+    "report_plot_data": {
+        "proseq_concordance_table": {
+            "id": "proseq_concordance_table",
+            "anchor": "proseq_concordance_table",
+            "plot_type": "violin plot",
+            "layout": {
+                "autosize": true,
+                "height": 500,
+                "hoverlabel": {
+                    "namelength": -1
+                },
+                "margin": {
+                    "b": 40,
+                    "l": 60,
+                    "pad": 0,
+                    "r": 15,
+                    "t": 50
+                },
+                "showlegend": false,
+                "template": {
+                    "layout": {
+                        "colorway": [
+                            "#7cb5ec",
+                            "#434348",
+                            "#90ed7d",
+                            "#f7a35c",
+                            "#8085e9",
+                            "#f15c80",
+                            "#e4d354",
+                            "#2b908f",
+                            "#f45b5b",
+                            "#91e8e1"
+                        ],
+                        "font": {
+                            "family": "'Lucida Grande', 'Open Sans', verdana, arial, sans-serif"
+                        },
+                        "modebar": {
+                            "activecolor": "rgba(0, 0, 0, 1)",
+                            "bgcolor": "rgba(0, 0, 0, 0)",
+                            "color": "rgba(0, 0, 0, 0.5)"
+                        },
+                        "paper_bgcolor": "white",
+                        "plot_bgcolor": "white",
+                        "title": {
+                            "font": {
+                                "size": 20
+                            }
+                        },
+                        "xaxis": {
+                            "color": "rgba(0,0,0,0.3)",
+                            "gridcolor": "rgba(0,0,0,0.05)",
+                            "tickfont": {
+                                "color": "rgba(0,0,0,1)",
+                                "size": 10
+                            },
+                            "zerolinecolor": "rgba(0,0,0,0.05)"
+                        },
+                        "yaxis": {
+                            "color": "rgba(0,0,0,0.3)",
+                            "gridcolor": "rgba(0,0,0,0.05)",
+                            "tickfont": {
+                                "color": "rgba(0,0,0,1)",
+                                "size": 10
+                            },
+                            "zerolinecolor": "rgba(0,0,0,0.05)"
+                        }
+                    }
+                },
+                "title": {
+                    "text": "proseq2.0-nf concordance (port vs original)",
+                    "x": 0.5,
+                    "xanchor": "center"
+                },
+                "xaxis": {
+                    "automargin": false,
+                    "tickfont": {
+                        "size": 9,
+                        "color": "rgba(0,0,0,0.5)"
+                    },
+                    "gridcolor": "rgba(0,0,0,0.1)",
+                    "zerolinecolor": "rgba(0,0,0,0.1)"
+                },
+                "yaxis": {
+                    "automargin": true,
+                    "tickfont": {
+                        "size": 9,
+                        "color": "rgba(0,0,0,0.5)"
+                    },
+                    "gridcolor": "rgba(0,0,0,0.1)",
+                    "zerolinecolor": "rgba(0,0,0,0.1)"
+                },
+                "violingap": 0,
+                "grid": {
+                    "columns": 1,
+                    "roworder": "top to bottom",
+                    "ygap": 0.4
+                }
+            },
+            "datasets": [
+                {
+                    "plot_id": "proseq_concordance_table",
+                    "label": "1",
+                    "uid": "proseq_concordance_table",
+                    "dconfig": {
+                        "ylab": "",
+                        "title": "proseq2.0-nf concordance (port vs original)",
+                        "subtitle": "10 samples"
+                    },
+                    "layout": {
+                        "title": {
+                            "text": "proseq2.0-nf concordance (port vs original)<br><sup>10 samples</sup>"
+                        },
+                        "xaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": null
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        },
+                        "yaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": ""
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        }
+                    },
+                    "trace_params": {
+                        "hovertemplate": "<b>%{text}</b>: %{x}<extra></extra>",
+                        "orientation": "h",
+                        "box": {
+                            "visible": true
+                        },
+                        "meanline": {
+                            "visible": true
+                        },
+                        "fillcolor": "#b5b5b5",
+                        "line": {
+                            "width": 2,
+                            "color": "#b5b5b5"
+                        },
+                        "opacity": 0.5,
+                        "points": false,
+                        "hoveron": "points"
+                    },
+                    "pct_range": {
+                        "xaxis": {
+                            "min": 0,
+                            "max": 100
+                        },
+                        "yaxis": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    },
+                    "n_series": 10,
+                    "metrics": [
+                        "Result",
+                        "bash_intervals",
+                        "nf_intervals",
+                        "shared"
+                    ],
+                    "header_by_metric": {
+                        "Result": {
+                            "title": "Result",
+                            "description": "Result",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 0,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": null
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "bash_intervals": {
+                            "title": "bash intervals",
+                            "description": "bash intervals",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 170493,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -852.465,
+                                    171349.727325
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "nf_intervals": {
+                            "title": "nf intervals",
+                            "description": "nf intervals",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 170493,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -852.465,
+                                    171349.727325
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "shared": {
+                            "title": "shared",
+                            "description": "shared",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 170493,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -852.465,
+                                    171349.727325
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        }
+                    },
+                    "violin_value_by_sample_by_metric": {
+                        "Result": {
+                            "gro_se_plus": "IDENTICAL",
+                            "gro_se_minus": "IDENTICAL",
+                            "pro_se_plus": "IDENTICAL",
+                            "pro_se_minus": "IDENTICAL",
+                            "pro_pe_5p_plus": "IDENTICAL",
+                            "pro_pe_5p_minus": "IDENTICAL",
+                            "pro_pe_3p_plus": "IDENTICAL",
+                            "pro_pe_3p_minus": "IDENTICAL",
+                            "pro_pe_opp_plus": "IDENTICAL",
+                            "pro_pe_opp_minus": "IDENTICAL"
+                        },
+                        "bash_intervals": {
+                            "gro_se_plus": 14516,
+                            "gro_se_minus": 15477,
+                            "pro_se_plus": 159747,
+                            "pro_se_minus": 170493,
+                            "pro_pe_5p_plus": 137999,
+                            "pro_pe_5p_minus": 147837,
+                            "pro_pe_3p_plus": 142122,
+                            "pro_pe_3p_minus": 152536,
+                            "pro_pe_opp_plus": 147837,
+                            "pro_pe_opp_minus": 137999
+                        },
+                        "nf_intervals": {
+                            "gro_se_plus": 14516,
+                            "gro_se_minus": 15477,
+                            "pro_se_plus": 159747,
+                            "pro_se_minus": 170493,
+                            "pro_pe_5p_plus": 137999,
+                            "pro_pe_5p_minus": 147837,
+                            "pro_pe_3p_plus": 142122,
+                            "pro_pe_3p_minus": 152536,
+                            "pro_pe_opp_plus": 147837,
+                            "pro_pe_opp_minus": 137999
+                        },
+                        "shared": {
+                            "gro_se_plus": 14516,
+                            "gro_se_minus": 15477,
+                            "pro_se_plus": 159747,
+                            "pro_se_minus": 170493,
+                            "pro_pe_5p_plus": 137999,
+                            "pro_pe_5p_minus": 147837,
+                            "pro_pe_3p_plus": 142122,
+                            "pro_pe_3p_minus": 152536,
+                            "pro_pe_opp_plus": 147837,
+                            "pro_pe_opp_minus": 137999
+                        }
+                    },
+                    "scatter_value_by_sample_by_metric": {
+                        "Result": {},
+                        "bash_intervals": {},
+                        "nf_intervals": {},
+                        "shared": {}
+                    },
+                    "all_samples": [
+                        "gro_se_minus",
+                        "gro_se_plus",
+                        "pro_pe_3p_minus",
+                        "pro_pe_3p_plus",
+                        "pro_pe_5p_minus",
+                        "pro_pe_5p_plus",
+                        "pro_pe_opp_minus",
+                        "pro_pe_opp_plus",
+                        "pro_se_minus",
+                        "pro_se_plus"
+                    ],
+                    "scatter_trace_params": {
+                        "mode": "markers",
+                        "marker": {
+                            "size": 4,
+                            "color": "#0b79e6"
+                        },
+                        "showlegend": false,
+                        "hovertemplate": "<b>%{text}</b>: %{x}<extra></extra>",
+                        "hoverlabel": {
+                            "bgcolor": "white"
+                        }
+                    },
+                    "dt": {
+                        "id": "proseq_concordance_table",
+                        "anchor": "proseq_concordance_table_table",
+                        "pconfig": {
+                            "id": "proseq_concordance_table",
+                            "title": "proseq2.0-nf concordance (port vs original)",
+                            "subtitle": null,
+                            "anchor": "proseq_concordance_table",
+                            "table_title": null,
+                            "height": null,
+                            "width": null,
+                            "square": false,
+                            "logswitch": false,
+                            "logswitch_active": false,
+                            "logswitch_label": "Log10",
+                            "cpswitch": true,
+                            "cpswitch_c_active": true,
+                            "cpswitch_counts_label": "Counts",
+                            "cpswitch_percent_label": "Percentages",
+                            "xLog": null,
+                            "yLog": null,
+                            "xlog": false,
+                            "ylog": false,
+                            "data_labels": [],
+                            "xTitle": null,
+                            "yTitle": null,
+                            "xlab": null,
+                            "ylab": null,
+                            "xsuffix": null,
+                            "ysuffix": null,
+                            "tt_suffix": null,
+                            "xLabFormat": null,
+                            "yLabFormat": null,
+                            "xLabelFormat": null,
+                            "yLabelFormat": null,
+                            "xlab_format": null,
+                            "ylab_format": null,
+                            "tt_label": null,
+                            "xDecimals": null,
+                            "yDecimals": null,
+                            "decimalPlaces": null,
+                            "x_decimals": null,
+                            "y_decimals": null,
+                            "tt_decimals": null,
+                            "xmin": null,
+                            "xmax": null,
+                            "ymin": null,
+                            "ymax": null,
+                            "xFloor": null,
+                            "xCeiling": null,
+                            "yFloor": null,
+                            "yCeiling": null,
+                            "x_clipmin": null,
+                            "x_clipmax": null,
+                            "y_clipmin": null,
+                            "y_clipmax": null,
+                            "save_data_file": false,
+                            "showlegend": null,
+                            "xMinRange": null,
+                            "yMinRange": null,
+                            "x_minrange": null,
+                            "y_minrange": null,
+                            "xPlotBands": null,
+                            "yPlotBands": null,
+                            "xPlotLines": null,
+                            "yPlotLines": null,
+                            "x_bands": null,
+                            "y_bands": null,
+                            "x_lines": null,
+                            "y_lines": null,
+                            "series_label": "samples",
+                            "flat_if_very_large": false,
+                            "namespace": "",
+                            "save_file": false,
+                            "raw_data_fn": null,
+                            "defaultsort": null,
+                            "sortRows": true,
+                            "sort_rows": true,
+                            "only_defined_headers": false,
+                            "col1_header": "Sample",
+                            "no_beeswarm": false,
+                            "no_violin": false,
+                            "scale": "GnBu",
+                            "min": null,
+                            "parse_numeric": false,
+                            "rows_are_samples": true
+                        },
+                        "section_by_id": {
+                            "proseq_concordance_table_table": {
+                                "column_by_key": {
+                                    "Result": {
+                                        "rid": "Result",
+                                        "clean_rid": "Result",
+                                        "title": "Result",
+                                        "description": "Result",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 0,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "bash intervals": {
+                                        "rid": "bash_intervals",
+                                        "clean_rid": "bash_intervals",
+                                        "title": "bash intervals",
+                                        "description": "bash intervals",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 170493,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "nf intervals": {
+                                        "rid": "nf_intervals",
+                                        "clean_rid": "nf_intervals",
+                                        "title": "nf intervals",
+                                        "description": "nf intervals",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 170493,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "shared": {
+                                        "rid": "shared",
+                                        "clean_rid": "shared",
+                                        "title": "shared",
+                                        "description": "shared",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 170493,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    }
+                                },
+                                "rows_by_sgroup": {
+                                    "gro_se_plus": [
+                                        {
+                                            "sample": "gro_se_plus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 14516,
+                                                    "mod": 14516,
+                                                    "fmt": "14,516"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 14516,
+                                                    "mod": 14516,
+                                                    "fmt": "14,516"
+                                                },
+                                                "shared": {
+                                                    "raw": 14516,
+                                                    "mod": 14516,
+                                                    "fmt": "14,516"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "gro_se_minus": [
+                                        {
+                                            "sample": "gro_se_minus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 15477,
+                                                    "mod": 15477,
+                                                    "fmt": "15,477"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 15477,
+                                                    "mod": 15477,
+                                                    "fmt": "15,477"
+                                                },
+                                                "shared": {
+                                                    "raw": 15477,
+                                                    "mod": 15477,
+                                                    "fmt": "15,477"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_se_plus": [
+                                        {
+                                            "sample": "pro_se_plus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 159747,
+                                                    "mod": 159747,
+                                                    "fmt": "159,747"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 159747,
+                                                    "mod": 159747,
+                                                    "fmt": "159,747"
+                                                },
+                                                "shared": {
+                                                    "raw": 159747,
+                                                    "mod": 159747,
+                                                    "fmt": "159,747"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_se_minus": [
+                                        {
+                                            "sample": "pro_se_minus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 170493,
+                                                    "mod": 170493,
+                                                    "fmt": "170,493"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 170493,
+                                                    "mod": 170493,
+                                                    "fmt": "170,493"
+                                                },
+                                                "shared": {
+                                                    "raw": 170493,
+                                                    "mod": 170493,
+                                                    "fmt": "170,493"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_5p_plus": [
+                                        {
+                                            "sample": "pro_pe_5p_plus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 137999,
+                                                    "mod": 137999,
+                                                    "fmt": "137,999"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 137999,
+                                                    "mod": 137999,
+                                                    "fmt": "137,999"
+                                                },
+                                                "shared": {
+                                                    "raw": 137999,
+                                                    "mod": 137999,
+                                                    "fmt": "137,999"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_5p_minus": [
+                                        {
+                                            "sample": "pro_pe_5p_minus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 147837,
+                                                    "mod": 147837,
+                                                    "fmt": "147,837"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 147837,
+                                                    "mod": 147837,
+                                                    "fmt": "147,837"
+                                                },
+                                                "shared": {
+                                                    "raw": 147837,
+                                                    "mod": 147837,
+                                                    "fmt": "147,837"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_3p_plus": [
+                                        {
+                                            "sample": "pro_pe_3p_plus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 142122,
+                                                    "mod": 142122,
+                                                    "fmt": "142,122"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 142122,
+                                                    "mod": 142122,
+                                                    "fmt": "142,122"
+                                                },
+                                                "shared": {
+                                                    "raw": 142122,
+                                                    "mod": 142122,
+                                                    "fmt": "142,122"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_3p_minus": [
+                                        {
+                                            "sample": "pro_pe_3p_minus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 152536,
+                                                    "mod": 152536,
+                                                    "fmt": "152,536"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 152536,
+                                                    "mod": 152536,
+                                                    "fmt": "152,536"
+                                                },
+                                                "shared": {
+                                                    "raw": 152536,
+                                                    "mod": 152536,
+                                                    "fmt": "152,536"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_opp_plus": [
+                                        {
+                                            "sample": "pro_pe_opp_plus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 147837,
+                                                    "mod": 147837,
+                                                    "fmt": "147,837"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 147837,
+                                                    "mod": 147837,
+                                                    "fmt": "147,837"
+                                                },
+                                                "shared": {
+                                                    "raw": 147837,
+                                                    "mod": 147837,
+                                                    "fmt": "147,837"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_opp_minus": [
+                                        {
+                                            "sample": "pro_pe_opp_minus",
+                                            "data": {
+                                                "Result": {
+                                                    "raw": "IDENTICAL",
+                                                    "mod": "IDENTICAL",
+                                                    "fmt": "IDENTICAL"
+                                                },
+                                                "bash intervals": {
+                                                    "raw": 137999,
+                                                    "mod": 137999,
+                                                    "fmt": "137,999"
+                                                },
+                                                "nf intervals": {
+                                                    "raw": 137999,
+                                                    "mod": 137999,
+                                                    "fmt": "137,999"
+                                                },
+                                                "shared": {
+                                                    "raw": 137999,
+                                                    "mod": 137999,
+                                                    "fmt": "137,999"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "headers_in_order": {
+                            "1000.0": [
+                                [
+                                    0,
+                                    "Result"
+                                ],
+                                [
+                                    0,
+                                    "bash intervals"
+                                ],
+                                [
+                                    0,
+                                    "nf intervals"
+                                ],
+                                [
+                                    0,
+                                    "shared"
+                                ]
+                            ]
+                        }
+                    },
+                    "show_table_by_default": true,
+                    "is_downsampled": false
+                }
+            ],
+            "pconfig": {
+                "id": "proseq_concordance_table",
+                "title": "proseq2.0-nf concordance (port vs original)",
+                "subtitle": null,
+                "anchor": "proseq_concordance_table",
+                "table_title": null,
+                "height": null,
+                "width": null,
+                "square": false,
+                "logswitch": false,
+                "logswitch_active": false,
+                "logswitch_label": "Log10",
+                "cpswitch": true,
+                "cpswitch_c_active": true,
+                "cpswitch_counts_label": "Counts",
+                "cpswitch_percent_label": "Percentages",
+                "xLog": null,
+                "yLog": null,
+                "xlog": false,
+                "ylog": false,
+                "data_labels": [],
+                "xTitle": null,
+                "yTitle": null,
+                "xlab": null,
+                "ylab": null,
+                "xsuffix": null,
+                "ysuffix": null,
+                "tt_suffix": null,
+                "xLabFormat": null,
+                "yLabFormat": null,
+                "xLabelFormat": null,
+                "yLabelFormat": null,
+                "xlab_format": null,
+                "ylab_format": null,
+                "tt_label": null,
+                "xDecimals": null,
+                "yDecimals": null,
+                "decimalPlaces": null,
+                "x_decimals": null,
+                "y_decimals": null,
+                "tt_decimals": null,
+                "xmin": null,
+                "xmax": null,
+                "ymin": null,
+                "ymax": null,
+                "xFloor": null,
+                "xCeiling": null,
+                "yFloor": null,
+                "yCeiling": null,
+                "x_clipmin": null,
+                "x_clipmax": null,
+                "y_clipmin": null,
+                "y_clipmax": null,
+                "save_data_file": false,
+                "showlegend": null,
+                "xMinRange": null,
+                "yMinRange": null,
+                "x_minrange": null,
+                "y_minrange": null,
+                "xPlotBands": null,
+                "yPlotBands": null,
+                "xPlotLines": null,
+                "yPlotLines": null,
+                "x_bands": null,
+                "y_bands": null,
+                "x_lines": null,
+                "y_lines": null,
+                "series_label": "samples",
+                "flat_if_very_large": false,
+                "namespace": "",
+                "save_file": false,
+                "raw_data_fn": null,
+                "defaultsort": null,
+                "sortRows": true,
+                "sort_rows": true,
+                "only_defined_headers": false,
+                "col1_header": "Sample",
+                "no_beeswarm": false,
+                "no_violin": false,
+                "scale": "GnBu",
+                "min": null,
+                "parse_numeric": false,
+                "rows_are_samples": true
+            },
+            "add_log_tab": false,
+            "add_pct_tab": false,
+            "l_active": false,
+            "p_active": false,
+            "pct_axis_update": {
+                "ticksuffix": "%",
+                "hoverformat": ".1f"
+            },
+            "axis_controlled_by_switches": [],
+            "square": false,
+            "flat": false,
+            "defer_render": false,
+            "section_anchor": null,
+            "module_anchor": null,
+            "violin_height": 70,
+            "extra_height": 63,
+            "no_violin": false,
+            "show_table": true,
+            "show_table_by_default": true,
+            "n_samples": 10,
+            "table_anchor": "proseq_concordance_table_table"
+        },
+        "proseq_read_stats_table": {
+            "id": "proseq_read_stats_table",
+            "anchor": "proseq_read_stats_table",
+            "plot_type": "violin plot",
+            "layout": {
+                "autosize": true,
+                "height": 500,
+                "hoverlabel": {
+                    "namelength": -1
+                },
+                "margin": {
+                    "b": 40,
+                    "l": 60,
+                    "pad": 0,
+                    "r": 15,
+                    "t": 50
+                },
+                "showlegend": false,
+                "template": {
+                    "layout": {
+                        "colorway": [
+                            "#7cb5ec",
+                            "#434348",
+                            "#90ed7d",
+                            "#f7a35c",
+                            "#8085e9",
+                            "#f15c80",
+                            "#e4d354",
+                            "#2b908f",
+                            "#f45b5b",
+                            "#91e8e1"
+                        ],
+                        "font": {
+                            "family": "'Lucida Grande', 'Open Sans', verdana, arial, sans-serif"
+                        },
+                        "modebar": {
+                            "activecolor": "rgba(0, 0, 0, 1)",
+                            "bgcolor": "rgba(0, 0, 0, 0)",
+                            "color": "rgba(0, 0, 0, 0.5)"
+                        },
+                        "paper_bgcolor": "white",
+                        "plot_bgcolor": "white",
+                        "title": {
+                            "font": {
+                                "size": 20
+                            }
+                        },
+                        "xaxis": {
+                            "color": "rgba(0,0,0,0.3)",
+                            "gridcolor": "rgba(0,0,0,0.05)",
+                            "tickfont": {
+                                "color": "rgba(0,0,0,1)",
+                                "size": 10
+                            },
+                            "zerolinecolor": "rgba(0,0,0,0.05)"
+                        },
+                        "yaxis": {
+                            "color": "rgba(0,0,0,0.3)",
+                            "gridcolor": "rgba(0,0,0,0.05)",
+                            "tickfont": {
+                                "color": "rgba(0,0,0,1)",
+                                "size": 10
+                            },
+                            "zerolinecolor": "rgba(0,0,0,0.05)"
+                        }
+                    }
+                },
+                "title": {
+                    "text": "proseq2.0 read summary",
+                    "x": 0.5,
+                    "xanchor": "center"
+                },
+                "xaxis": {
+                    "automargin": false,
+                    "tickfont": {
+                        "size": 9,
+                        "color": "rgba(0,0,0,0.5)"
+                    },
+                    "gridcolor": "rgba(0,0,0,0.1)",
+                    "zerolinecolor": "rgba(0,0,0,0.1)"
+                },
+                "yaxis": {
+                    "automargin": true,
+                    "tickfont": {
+                        "size": 9,
+                        "color": "rgba(0,0,0,0.5)"
+                    },
+                    "gridcolor": "rgba(0,0,0,0.1)",
+                    "zerolinecolor": "rgba(0,0,0,0.1)"
+                },
+                "violingap": 0,
+                "grid": {
+                    "columns": 1,
+                    "roworder": "top to bottom",
+                    "ygap": 0.4
+                }
+            },
+            "datasets": [
+                {
+                    "plot_id": "proseq_read_stats_table",
+                    "label": "1",
+                    "uid": "proseq_read_stats_table",
+                    "dconfig": {
+                        "ylab": "",
+                        "title": "proseq2.0 read summary",
+                        "subtitle": "5 samples"
+                    },
+                    "layout": {
+                        "title": {
+                            "text": "proseq2.0 read summary<br><sup>5 samples</sup>"
+                        },
+                        "xaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": null
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        },
+                        "yaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": ""
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        }
+                    },
+                    "trace_params": {
+                        "hovertemplate": "<b>%{text}</b>: %{x}<extra></extra>",
+                        "orientation": "h",
+                        "box": {
+                            "visible": true
+                        },
+                        "meanline": {
+                            "visible": true
+                        },
+                        "fillcolor": "#b5b5b5",
+                        "line": {
+                            "width": 2,
+                            "color": "#b5b5b5"
+                        },
+                        "opacity": 0.5,
+                        "points": false,
+                        "hoveron": "points"
+                    },
+                    "pct_range": {
+                        "xaxis": {
+                            "min": 0,
+                            "max": 100
+                        },
+                        "yaxis": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    },
+                    "n_series": 5,
+                    "metrics": [
+                        "proseq2_0-Seq_type",
+                        "proseq2_0-Input_reads_pairs",
+                        "proseq2_0-Pass_QC",
+                        "proseq2_0-Mappable",
+                        "proseq2_0-Mappable_excl_rRNA"
+                    ],
+                    "header_by_metric": {
+                        "proseq2_0-Seq_type": {
+                            "title": "Seq type",
+                            "description": "Seq type",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 0,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": null
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "proseq2_0-Input_reads_pairs": {
+                            "title": "Input (reads/pairs)",
+                            "description": "Input (reads/pairs)",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 1000000,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -5000.0,
+                                    1005025.0
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "proseq2_0-Pass_QC": {
+                            "title": "Pass QC",
+                            "description": "Pass QC",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 992853,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -4964.265,
+                                    997842.086325
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "proseq2_0-Mappable": {
+                            "title": "Mappable",
+                            "description": "Mappable",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 478371,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -2391.855,
+                                    480774.814275
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        },
+                        "proseq2_0-Mappable_excl_rRNA": {
+                            "title": "Mappable (excl. rRNA)",
+                            "description": "Mappable (excl. rRNA)",
+                            "suffix": "",
+                            "dmin": 0,
+                            "dmax": 470886,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": null,
+                                "tickvals": null,
+                                "range": [
+                                    -2354.43,
+                                    473252.20215
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "",
+                            "color": null,
+                            "hoverformat": null
+                        }
+                    },
+                    "violin_value_by_sample_by_metric": {
+                        "proseq2_0-Seq_type": {
+                            "gro_se": "SE",
+                            "pro_se": "SE",
+                            "pro_pe_5p": "PE",
+                            "pro_pe_3p": "PE",
+                            "pro_pe_opp": "PE"
+                        },
+                        "proseq2_0-Input_reads_pairs": {
+                            "gro_se": 1000000,
+                            "pro_se": 1000000,
+                            "pro_pe_5p": 1000000,
+                            "pro_pe_3p": 1000000,
+                            "pro_pe_opp": 1000000
+                        },
+                        "proseq2_0-Pass_QC": {
+                            "gro_se": 746342,
+                            "pro_se": 891939,
+                            "pro_pe_5p": 992853,
+                            "pro_pe_3p": 992853,
+                            "pro_pe_opp": 992853
+                        },
+                        "proseq2_0-Mappable": {
+                            "gro_se": 37060,
+                            "pro_se": 478371,
+                            "pro_pe_5p": 412401,
+                            "pro_pe_3p": 412401,
+                            "pro_pe_opp": 412401
+                        },
+                        "proseq2_0-Mappable_excl_rRNA": {
+                            "gro_se": 36136,
+                            "pro_se": 470886,
+                            "pro_pe_5p": 403720,
+                            "pro_pe_3p": 403720,
+                            "pro_pe_opp": 403720
+                        }
+                    },
+                    "scatter_value_by_sample_by_metric": {
+                        "proseq2_0-Seq_type": {},
+                        "proseq2_0-Input_reads_pairs": {},
+                        "proseq2_0-Pass_QC": {},
+                        "proseq2_0-Mappable": {},
+                        "proseq2_0-Mappable_excl_rRNA": {}
+                    },
+                    "all_samples": [
+                        "gro_se",
+                        "pro_pe_3p",
+                        "pro_pe_5p",
+                        "pro_pe_opp",
+                        "pro_se"
+                    ],
+                    "scatter_trace_params": {
+                        "mode": "markers",
+                        "marker": {
+                            "size": 4,
+                            "color": "#0b79e6"
+                        },
+                        "showlegend": false,
+                        "hovertemplate": "<b>%{text}</b>: %{x}<extra></extra>",
+                        "hoverlabel": {
+                            "bgcolor": "white"
+                        }
+                    },
+                    "dt": {
+                        "id": "proseq_read_stats_table",
+                        "anchor": "proseq_read_stats_table_table",
+                        "pconfig": {
+                            "id": "proseq_read_stats_table",
+                            "title": "proseq2.0 read summary",
+                            "subtitle": null,
+                            "anchor": "proseq_read_stats_table",
+                            "table_title": null,
+                            "height": null,
+                            "width": null,
+                            "square": false,
+                            "logswitch": false,
+                            "logswitch_active": false,
+                            "logswitch_label": "Log10",
+                            "cpswitch": true,
+                            "cpswitch_c_active": true,
+                            "cpswitch_counts_label": "Counts",
+                            "cpswitch_percent_label": "Percentages",
+                            "xLog": null,
+                            "yLog": null,
+                            "xlog": false,
+                            "ylog": false,
+                            "data_labels": [],
+                            "xTitle": null,
+                            "yTitle": null,
+                            "xlab": null,
+                            "ylab": null,
+                            "xsuffix": null,
+                            "ysuffix": null,
+                            "tt_suffix": null,
+                            "xLabFormat": null,
+                            "yLabFormat": null,
+                            "xLabelFormat": null,
+                            "yLabelFormat": null,
+                            "xlab_format": null,
+                            "ylab_format": null,
+                            "tt_label": null,
+                            "xDecimals": null,
+                            "yDecimals": null,
+                            "decimalPlaces": null,
+                            "x_decimals": null,
+                            "y_decimals": null,
+                            "tt_decimals": null,
+                            "xmin": null,
+                            "xmax": null,
+                            "ymin": null,
+                            "ymax": null,
+                            "xFloor": null,
+                            "xCeiling": null,
+                            "yFloor": null,
+                            "yCeiling": null,
+                            "x_clipmin": null,
+                            "x_clipmax": null,
+                            "y_clipmin": null,
+                            "y_clipmax": null,
+                            "save_data_file": false,
+                            "showlegend": null,
+                            "xMinRange": null,
+                            "yMinRange": null,
+                            "x_minrange": null,
+                            "y_minrange": null,
+                            "xPlotBands": null,
+                            "yPlotBands": null,
+                            "xPlotLines": null,
+                            "yPlotLines": null,
+                            "x_bands": null,
+                            "y_bands": null,
+                            "x_lines": null,
+                            "y_lines": null,
+                            "series_label": "samples",
+                            "flat_if_very_large": false,
+                            "namespace": "proseq2.0",
+                            "save_file": false,
+                            "raw_data_fn": null,
+                            "defaultsort": null,
+                            "sortRows": true,
+                            "sort_rows": true,
+                            "only_defined_headers": false,
+                            "col1_header": "Sample",
+                            "no_beeswarm": false,
+                            "no_violin": false,
+                            "scale": "GnBu",
+                            "min": null,
+                            "parse_numeric": false,
+                            "rows_are_samples": true
+                        },
+                        "section_by_id": {
+                            "proseq_read_stats_table_table": {
+                                "column_by_key": {
+                                    "Seq type": {
+                                        "rid": "proseq2_0-Seq_type",
+                                        "clean_rid": "proseq2_0-Seq_type",
+                                        "title": "Seq type",
+                                        "description": "Seq type",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 0,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "Input (reads/pairs)": {
+                                        "rid": "proseq2_0-Input_reads_pairs",
+                                        "clean_rid": "proseq2_0-Input_reads_pairs",
+                                        "title": "Input (reads/pairs)",
+                                        "description": "Input (reads/pairs)",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 1000000,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "Pass QC": {
+                                        "rid": "proseq2_0-Pass_QC",
+                                        "clean_rid": "proseq2_0-Pass_QC",
+                                        "title": "Pass QC",
+                                        "description": "Pass QC",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 992853,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "Mappable": {
+                                        "rid": "proseq2_0-Mappable",
+                                        "clean_rid": "proseq2_0-Mappable",
+                                        "title": "Mappable",
+                                        "description": "Mappable",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 478371,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    },
+                                    "Mappable (excl. rRNA)": {
+                                        "rid": "proseq2_0-Mappable_excl_rRNA",
+                                        "clean_rid": "proseq2_0-Mappable_excl_rRNA",
+                                        "title": "Mappable (excl. rRNA)",
+                                        "description": "Mappable (excl. rRNA)",
+                                        "scale": "GnBu",
+                                        "hidden": false,
+                                        "placement": 1000.0,
+                                        "namespace": "",
+                                        "colour": null,
+                                        "color": null,
+                                        "max": null,
+                                        "dmax": 470886,
+                                        "min": null,
+                                        "dmin": 0,
+                                        "ceiling": null,
+                                        "floor": null,
+                                        "minRange": null,
+                                        "minrange": null,
+                                        "shared_key": null,
+                                        "tt_decimals": null,
+                                        "suffix": null,
+                                        "cond_formatting_colours": [
+                                            {
+                                                "blue": "#337ab7"
+                                            },
+                                            {
+                                                "lbue": "#5bc0de"
+                                            },
+                                            {
+                                                "pass": "#5cb85c"
+                                            },
+                                            {
+                                                "warn": "#f0ad4e"
+                                            },
+                                            {
+                                                "fail": "#d9534f"
+                                            },
+                                            {
+                                                "male": "#5bc0de"
+                                            },
+                                            {
+                                                "female": "#d9534f"
+                                            }
+                                        ],
+                                        "cond_formatting_rules": {},
+                                        "bgcols": {},
+                                        "bars_zero_centrepoint": false,
+                                        "modify": null,
+                                        "format": null
+                                    }
+                                },
+                                "rows_by_sgroup": {
+                                    "gro_se": [
+                                        {
+                                            "sample": "gro_se",
+                                            "data": {
+                                                "Seq type": {
+                                                    "raw": "SE",
+                                                    "mod": "SE",
+                                                    "fmt": "SE"
+                                                },
+                                                "Input (reads/pairs)": {
+                                                    "raw": 1000000,
+                                                    "mod": 1000000,
+                                                    "fmt": "1,000,000"
+                                                },
+                                                "Pass QC": {
+                                                    "raw": 746342,
+                                                    "mod": 746342,
+                                                    "fmt": "746,342"
+                                                },
+                                                "Mappable": {
+                                                    "raw": 37060,
+                                                    "mod": 37060,
+                                                    "fmt": "37,060"
+                                                },
+                                                "Mappable (excl. rRNA)": {
+                                                    "raw": 36136,
+                                                    "mod": 36136,
+                                                    "fmt": "36,136"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_se": [
+                                        {
+                                            "sample": "pro_se",
+                                            "data": {
+                                                "Seq type": {
+                                                    "raw": "SE",
+                                                    "mod": "SE",
+                                                    "fmt": "SE"
+                                                },
+                                                "Input (reads/pairs)": {
+                                                    "raw": 1000000,
+                                                    "mod": 1000000,
+                                                    "fmt": "1,000,000"
+                                                },
+                                                "Pass QC": {
+                                                    "raw": 891939,
+                                                    "mod": 891939,
+                                                    "fmt": "891,939"
+                                                },
+                                                "Mappable": {
+                                                    "raw": 478371,
+                                                    "mod": 478371,
+                                                    "fmt": "478,371"
+                                                },
+                                                "Mappable (excl. rRNA)": {
+                                                    "raw": 470886,
+                                                    "mod": 470886,
+                                                    "fmt": "470,886"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_5p": [
+                                        {
+                                            "sample": "pro_pe_5p",
+                                            "data": {
+                                                "Seq type": {
+                                                    "raw": "PE",
+                                                    "mod": "PE",
+                                                    "fmt": "PE"
+                                                },
+                                                "Input (reads/pairs)": {
+                                                    "raw": 1000000,
+                                                    "mod": 1000000,
+                                                    "fmt": "1,000,000"
+                                                },
+                                                "Pass QC": {
+                                                    "raw": 992853,
+                                                    "mod": 992853,
+                                                    "fmt": "992,853"
+                                                },
+                                                "Mappable": {
+                                                    "raw": 412401,
+                                                    "mod": 412401,
+                                                    "fmt": "412,401"
+                                                },
+                                                "Mappable (excl. rRNA)": {
+                                                    "raw": 403720,
+                                                    "mod": 403720,
+                                                    "fmt": "403,720"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_3p": [
+                                        {
+                                            "sample": "pro_pe_3p",
+                                            "data": {
+                                                "Seq type": {
+                                                    "raw": "PE",
+                                                    "mod": "PE",
+                                                    "fmt": "PE"
+                                                },
+                                                "Input (reads/pairs)": {
+                                                    "raw": 1000000,
+                                                    "mod": 1000000,
+                                                    "fmt": "1,000,000"
+                                                },
+                                                "Pass QC": {
+                                                    "raw": 992853,
+                                                    "mod": 992853,
+                                                    "fmt": "992,853"
+                                                },
+                                                "Mappable": {
+                                                    "raw": 412401,
+                                                    "mod": 412401,
+                                                    "fmt": "412,401"
+                                                },
+                                                "Mappable (excl. rRNA)": {
+                                                    "raw": 403720,
+                                                    "mod": 403720,
+                                                    "fmt": "403,720"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "pro_pe_opp": [
+                                        {
+                                            "sample": "pro_pe_opp",
+                                            "data": {
+                                                "Seq type": {
+                                                    "raw": "PE",
+                                                    "mod": "PE",
+                                                    "fmt": "PE"
+                                                },
+                                                "Input (reads/pairs)": {
+                                                    "raw": 1000000,
+                                                    "mod": 1000000,
+                                                    "fmt": "1,000,000"
+                                                },
+                                                "Pass QC": {
+                                                    "raw": 992853,
+                                                    "mod": 992853,
+                                                    "fmt": "992,853"
+                                                },
+                                                "Mappable": {
+                                                    "raw": 412401,
+                                                    "mod": 412401,
+                                                    "fmt": "412,401"
+                                                },
+                                                "Mappable (excl. rRNA)": {
+                                                    "raw": 403720,
+                                                    "mod": 403720,
+                                                    "fmt": "403,720"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "headers_in_order": {
+                            "1000.0": [
+                                [
+                                    0,
+                                    "Seq type"
+                                ],
+                                [
+                                    0,
+                                    "Input (reads/pairs)"
+                                ],
+                                [
+                                    0,
+                                    "Pass QC"
+                                ],
+                                [
+                                    0,
+                                    "Mappable"
+                                ],
+                                [
+                                    0,
+                                    "Mappable (excl. rRNA)"
+                                ]
+                            ]
+                        }
+                    },
+                    "show_table_by_default": true,
+                    "is_downsampled": false
+                }
+            ],
+            "pconfig": {
+                "id": "proseq_read_stats_table",
+                "title": "proseq2.0 read summary",
+                "subtitle": null,
+                "anchor": "proseq_read_stats_table",
+                "table_title": null,
+                "height": null,
+                "width": null,
+                "square": false,
+                "logswitch": false,
+                "logswitch_active": false,
+                "logswitch_label": "Log10",
+                "cpswitch": true,
+                "cpswitch_c_active": true,
+                "cpswitch_counts_label": "Counts",
+                "cpswitch_percent_label": "Percentages",
+                "xLog": null,
+                "yLog": null,
+                "xlog": false,
+                "ylog": false,
+                "data_labels": [],
+                "xTitle": null,
+                "yTitle": null,
+                "xlab": null,
+                "ylab": null,
+                "xsuffix": null,
+                "ysuffix": null,
+                "tt_suffix": null,
+                "xLabFormat": null,
+                "yLabFormat": null,
+                "xLabelFormat": null,
+                "yLabelFormat": null,
+                "xlab_format": null,
+                "ylab_format": null,
+                "tt_label": null,
+                "xDecimals": null,
+                "yDecimals": null,
+                "decimalPlaces": null,
+                "x_decimals": null,
+                "y_decimals": null,
+                "tt_decimals": null,
+                "xmin": null,
+                "xmax": null,
+                "ymin": null,
+                "ymax": null,
+                "xFloor": null,
+                "xCeiling": null,
+                "yFloor": null,
+                "yCeiling": null,
+                "x_clipmin": null,
+                "x_clipmax": null,
+                "y_clipmin": null,
+                "y_clipmax": null,
+                "save_data_file": false,
+                "showlegend": null,
+                "xMinRange": null,
+                "yMinRange": null,
+                "x_minrange": null,
+                "y_minrange": null,
+                "xPlotBands": null,
+                "yPlotBands": null,
+                "xPlotLines": null,
+                "yPlotLines": null,
+                "x_bands": null,
+                "y_bands": null,
+                "x_lines": null,
+                "y_lines": null,
+                "series_label": "samples",
+                "flat_if_very_large": false,
+                "namespace": "proseq2.0",
+                "save_file": false,
+                "raw_data_fn": null,
+                "defaultsort": null,
+                "sortRows": true,
+                "sort_rows": true,
+                "only_defined_headers": false,
+                "col1_header": "Sample",
+                "no_beeswarm": false,
+                "no_violin": false,
+                "scale": "GnBu",
+                "min": null,
+                "parse_numeric": false,
+                "rows_are_samples": true
+            },
+            "add_log_tab": false,
+            "add_pct_tab": false,
+            "l_active": false,
+            "p_active": false,
+            "pct_axis_update": {
+                "ticksuffix": "%",
+                "hoverformat": ".1f"
+            },
+            "axis_controlled_by_switches": [],
+            "square": false,
+            "flat": false,
+            "defer_render": false,
+            "section_anchor": null,
+            "module_anchor": null,
+            "violin_height": 70,
+            "extra_height": 63,
+            "no_violin": false,
+            "show_table": true,
+            "show_table_by_default": true,
+            "n_samples": 5,
+            "table_anchor": "proseq_read_stats_table_table"
+        }
+    },
+    "config_analysis_dir": [
+        "test/out/"
+    ],
+    "config_git_hash": null,
+    "config_intro_text": null,
+    "config_report_comment": null,
+    "config_report_header_info": null,
+    "config_script_path": "/programs/multiqc-1.31/lib/python3.9/site-packages/multiqc",
+    "config_short_version": "1.31",
+    "config_subtitle": null,
+    "config_title": null,
+    "config_version": "1.31",
+    "config_output_dir": "/local/workdir/emw97/proseq2.0_nf/test/out/multiqc",
+    "config_sample_names_rename": [],
+    "config_sample_names_rename_buttons": [],
+    "config_analysis_dir_abs": [
+        "/local/workdir/emw97/proseq2.0_nf/test/out"
+    ],
+    "report_saved_raw_data": {
+        "multiqc_proseq_concordance_table": {
+            "gro_se_plus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 14516,
+                "nf intervals": 14516,
+                "shared": 14516
+            },
+            "gro_se_minus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 15477,
+                "nf intervals": 15477,
+                "shared": 15477
+            },
+            "pro_se_plus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 159747,
+                "nf intervals": 159747,
+                "shared": 159747
+            },
+            "pro_se_minus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 170493,
+                "nf intervals": 170493,
+                "shared": 170493
+            },
+            "pro_pe_5p_plus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 137999,
+                "nf intervals": 137999,
+                "shared": 137999
+            },
+            "pro_pe_5p_minus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 147837,
+                "nf intervals": 147837,
+                "shared": 147837
+            },
+            "pro_pe_3p_plus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 142122,
+                "nf intervals": 142122,
+                "shared": 142122
+            },
+            "pro_pe_3p_minus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 152536,
+                "nf intervals": 152536,
+                "shared": 152536
+            },
+            "pro_pe_opp_plus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 147837,
+                "nf intervals": 147837,
+                "shared": 147837
+            },
+            "pro_pe_opp_minus": {
+                "Result": "IDENTICAL",
+                "bash intervals": 137999,
+                "nf intervals": 137999,
+                "shared": 137999
+            }
+        },
+        "multiqc_proseq_read_stats_table": {
+            "gro_se": {
+                "Seq type": "SE",
+                "Input (reads/pairs)": 1000000,
+                "Pass QC": 746342,
+                "Mappable": 37060,
+                "Mappable (excl. rRNA)": 36136
+            },
+            "pro_se": {
+                "Seq type": "SE",
+                "Input (reads/pairs)": 1000000,
+                "Pass QC": 891939,
+                "Mappable": 478371,
+                "Mappable (excl. rRNA)": 470886
+            },
+            "pro_pe_5p": {
+                "Seq type": "PE",
+                "Input (reads/pairs)": 1000000,
+                "Pass QC": 992853,
+                "Mappable": 412401,
+                "Mappable (excl. rRNA)": 403720
+            },
+            "pro_pe_3p": {
+                "Seq type": "PE",
+                "Input (reads/pairs)": 1000000,
+                "Pass QC": 992853,
+                "Mappable": 412401,
+                "Mappable (excl. rRNA)": 403720
+            },
+            "pro_pe_opp": {
+                "Seq type": "PE",
+                "Input (reads/pairs)": 1000000,
+                "Pass QC": 992853,
+                "Mappable": 412401,
+                "Mappable (excl. rRNA)": 403720
+            }
+        }
+    }
+}
