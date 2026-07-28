@@ -31,6 +31,9 @@ Plus optional QC (on by default):
 - **Strand inference** (opt-in, `--gene_bed`) — RSeQC `infer_experiment.py` on a
   BAM subsample checks whether the data's orientation matches the configured
   strand flags and **warns** on a mismatch (see *Strand inference* below).
+- **rRNA depletion** (opt-in, `--remove_rrna`) — SortMeRNA removes rRNA reads
+  *before* alignment against reference rRNA FASTA(s), giving a clean `% rRNA`
+  metric without needing rDNA in the genome index (see *rRNA removal* below).
 
 ## Requirements
 
@@ -101,6 +104,8 @@ cached results after an interruption.
 | *(new)*                  | `--skip_fastqc`           | `false`                         |
 | *(new)*                  | `--skip_multiqc`          | `false`                         |
 | *(new)*                  | `--gene_bed`              | none (enables strand inference) |
+| *(new)*                  | `--remove_rrna`           | `false`                         |
+| *(new)*                  | `--rrna_refs`             | none (required with `--remove_rrna`) |
 | `--thread`               | *per-process `task.cpus`* | via resource labels             |
 | `-T` / `-O`              | Nextflow `work/` / `--outdir` | `./results`                 |
 
@@ -117,7 +122,8 @@ results/
 ├── qc/        <sample>.QC.log, <sample>.align.log, <sample>.prinseq-pcrDups.gd
 │              <sample>.cutadapt.log, proseq_read_stats_mqc.tsv
 │   ├── fastqc/{raw,trim}/  per-sample FastQC reports
-│   └── strand/            <sample>.infer_experiment.txt, <sample>.strand_check.txt
+│   ├── strand/            <sample>.infer_experiment.txt, <sample>.strand_check.txt
+│   └── sortmerna/         <sample>.sortmerna.log   (when --remove_rrna)
 ├── multiqc/   multiqc_report.html + multiqc_data/
 └── pipeline_info/  execution report, timeline, trace, DAG
 ```
@@ -150,6 +156,31 @@ subsample) check the data against your configured geometry. Per sample you get
 and the raw RSeQC output flows into the MultiQC report. A `WARN` means the data's
 orientation disagrees with your flags (e.g. swapped R1/R2, or wrong assay) — the
 pipeline still completes; it does not auto-change your settings.
+
+## rRNA removal
+
+By default the pipeline removes rRNA the way proseq2.0 does: *after* alignment, by
+dropping reads on contigs named `rRNA`/`chrM` — which only works if the genome
+index actually contains an rDNA contig. Many assemblies (e.g. UCSC dm6/mm10/hg38)
+do **not** include the nuclear rDNA arrays, so rRNA reads simply fail to map and
+vanish as "unmapped" (and the `Mappable (excl. rRNA)` count barely drops).
+
+For a portable, standard alternative, `--remove_rrna` runs **SortMeRNA** *before*
+alignment to filter reads by sequence against reference rRNA FASTA(s):
+
+```bash
+nextflow run main.nf ... --remove_rrna --rrna_refs "rRNA_db.fa"
+# multiple refs: --rrna_refs "silva-euk-18s.fa,silva-euk-28s.fa,rfam-5s.fa"
+```
+
+- `--rrna_refs` takes one or more FASTA files (comma-separated, or a glob). Use an
+  rRNA database (e.g. the SortMeRNA/SILVA sets) or your organism's rRNA sequences.
+- Paired-end uses `--paired_in` (a pair is dropped if *either* mate is rRNA).
+- Adds a **Post rRNA-removal** column to the read-summary table and feeds the
+  SortMeRNA log into MultiQC (`% rRNA`).
+
+This runs between preprocessing and alignment; the post-alignment `chrM`/`rRNA`
+coordinate filter still applies as a backstop.
 
 ## Profiles
 

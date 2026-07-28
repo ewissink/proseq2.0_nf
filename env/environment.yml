@@ -16,3 +16,4 @@ dependencies:
   - fastqc=0.12.1
   - multiqc=1.21
   - rseqc=5.0.3           # infer_experiment.py for strand inference
+  - sortmerna=4.3.6       # optional pre-alignment rRNA removal

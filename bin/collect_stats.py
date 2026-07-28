@@ -18,6 +18,7 @@ COLUMNS = [
     ("seq_type",         "Seq type"),
     ("input",            "Input (reads/pairs)"),
     ("pass_qc",          "Pass QC"),
+    ("post_rrna",        "Post rRNA-removal"),
     ("mappable",         "Mappable"),
     ("mappable_no_rrna", "Mappable (excl. rRNA)"),
 ]
@@ -37,6 +38,11 @@ for path in glob.glob(os.path.join(metrics_dir, "*.metrics")):
     if sample:
         rows.setdefault(sample, {}).update(kv)
 
+# keep only columns that have at least one value (e.g. post_rrna appears only
+# when SortMeRNA ran)
+columns = [(k, d) for k, d in COLUMNS
+           if any(rows[s].get(k) not in (None, "") for s in rows)]
+
 header = [
     "# id: 'proseq_read_stats'",
     "# section_name: 'proseq2.0 read summary'",
@@ -47,7 +53,7 @@ header = [
     "#     namespace: 'proseq2.0'",
 ]
 print("\n".join(header))
-print("\t".join(["Sample"] + [disp for _, disp in COLUMNS]))
+print("\t".join(["Sample"] + [disp for _, disp in columns]))
 for sample in sorted(rows):
     kv = rows[sample]
-    print("\t".join([sample] + [str(kv.get(key, "")) for key, _ in COLUMNS]))
+    print("\t".join([sample] + [str(kv.get(key, "")) for key, _ in columns]))

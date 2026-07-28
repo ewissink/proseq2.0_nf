@@ -7,6 +7,8 @@ nextflow.enable.dsl = 2
 
 include { PREPROCESS_SE } from './modules/local/preprocess_se'
 include { PREPROCESS_PE } from './modules/local/preprocess_pe'
+include { SORTMERNA_SE  } from './modules/local/sortmerna_se'
+include { SORTMERNA_PE  } from './modules/local/sortmerna_pe'
 include { BWA_ALIGN_SE  } from './modules/local/bwa_align_se'
 include { BWA_ALIGN_PE  } from './modules/local/bwa_align_pe'
 include { MAKE_BIGWIG   } from './modules/local/make_bigwig'
@@ -91,6 +93,8 @@ workflow {
     if (!params.chrom_info) error "Missing --chrom_info (chromInfo table)."
     if (params.dreg && (params.aligner == 'mem'))
         error "--dreg is only compatible with bwa aln (do not combine with --aligner mem)."
+    if (params.remove_rrna && !params.rrna_refs)
+        error "--remove_rrna requires --rrna_refs (rRNA FASTA file(s): comma-separated list or a glob)."
 
     // --- reference channels ---
     ch_index      = Channel.fromPath("${params.bwa_index}*", checkIfExists: true).collect()
@@ -134,18 +138,26 @@ workflow {
         }
         .set { ch_branched }
 
-    // --- single-end path ---
+    // --- preprocess ---
     ch_se_reads = ch_branched.se.map { meta, reads -> [ meta, reads[0] ] }
     PREPROCESS_SE( ch_se_reads )
-    BWA_ALIGN_SE( PREPROCESS_SE.out.reads, ch_index, bwa_prefix )
-
-    // --- paired-end path ---
     ch_pe_reads = ch_branched.pe.map { meta, reads -> [ meta, reads[0], reads[1] ] }
     PREPROCESS_PE( ch_pe_reads )
-    BWA_ALIGN_PE(
-        PREPROCESS_PE.out.reads.map { meta, r1, r2 -> [ meta, r1, r2 ] },
-        ch_index, bwa_prefix
-    )
+
+    // --- optional rRNA depletion (SortMeRNA), else pass QC'd reads straight through ---
+    def ch_se_to_align = PREPROCESS_SE.out.reads
+    def ch_pe_to_align = PREPROCESS_PE.out.reads
+    if (params.remove_rrna) {
+        ch_rrna = Channel.fromPath(params.rrna_refs.tokenize(','), checkIfExists: true).collect()
+        SORTMERNA_SE( PREPROCESS_SE.out.reads, ch_rrna )
+        SORTMERNA_PE( PREPROCESS_PE.out.reads, ch_rrna )
+        ch_se_to_align = SORTMERNA_SE.out.reads
+        ch_pe_to_align = SORTMERNA_PE.out.reads
+    }
+
+    // --- align ---
+    BWA_ALIGN_SE( ch_se_to_align, ch_index, bwa_prefix )
+    BWA_ALIGN_PE( ch_pe_to_align, ch_index, bwa_prefix )
 
     // --- bigWigs (shared) ---
     ch_bams = BWA_ALIGN_SE.out.bam.mix( BWA_ALIGN_PE.out.bam )
@@ -170,6 +182,9 @@ workflow {
         PREPROCESS_SE.out.cutadapt,
         PREPROCESS_PE.out.cutadapt
     )
+    if (params.remove_rrna) {
+        ch_multiqc = ch_multiqc.mix( SORTMERNA_SE.out.log, SORTMERNA_PE.out.log )
+    }
 
     // --- strand inference / validation (opt-in via --gene_bed) ---
     if (params.gene_bed) {
@@ -182,6 +197,9 @@ workflow {
     // read-count / dedup / mapping table as MultiQC custom content
     ch_metrics = PREPROCESS_SE.out.metrics
         .mix( PREPROCESS_PE.out.metrics, MAKE_BIGWIG.out.metrics )
+    if (params.remove_rrna) {
+        ch_metrics = ch_metrics.mix( SORTMERNA_SE.out.metrics, SORTMERNA_PE.out.metrics )
+    }
     COLLECT_STATS( ch_metrics.collect() )
     ch_multiqc = ch_multiqc.mix( COLLECT_STATS.out.mqc )
 
