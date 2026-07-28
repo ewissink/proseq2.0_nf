@@ -46,15 +46,22 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+echo "== proseq2.0-nf concordance test =="
+
 [ -n "$BWA_INDEX" ]  || { echo "ERROR: --bwa-index is required" >&2; exit 1; }
 [ -n "$CHROM_INFO" ] || { echo "ERROR: --chrom-info is required" >&2; exit 1; }
 [ -f "$CHROM_INFO" ] || { echo "ERROR: chrom-info not found: $CHROM_INFO" >&2; exit 1; }
+[ -e "${BWA_INDEX}.bwt" ] || { echo "ERROR: BWA index not found at prefix '${BWA_INDEX}' (expected ${BWA_INDEX}.bwt). Build it with test/setup_genome.sh, or fix --bwa-index." >&2; exit 1; }
+
+# The pipelines run from other working dirs, so make these absolute now.
+CHROM_INFO="$(cd "$(dirname "$CHROM_INFO")" && pwd)/$(basename "$CHROM_INFO")"
+BWA_INDEX="$(cd "$(dirname "$BWA_INDEX")" && pwd)/$(basename "$BWA_INDEX")"
 
 for tool in nextflow seqtk fasterq-dump bwa samtools bigWigToBedGraph; do
-  command -v "$tool" >/dev/null 2>&1 || { echo "ERROR: '$tool' not on PATH (activate test env)" >&2; exit 1; }
+  command -v "$tool" >/dev/null 2>&1 || { echo "ERROR: '$tool' not on PATH — did you 'conda activate proseq2.0-nf-test'?" >&2; exit 1; }
 done
 
-mkdir -p "$OUTDIR"
+mkdir -p "$OUTDIR"; OUTDIR="$(cd "$OUTDIR" && pwd)"
 READSDIR="$OUTDIR/reads"; mkdir -p "$READSDIR"
 
 # ---- map assay+layout(+report) to matched bash / NF flags ----
@@ -115,7 +122,7 @@ run_bash() {  # $1=name $2=layout ; uses BASH_FLAGS
   local name="$1" layout="$2" o="$OUTDIR/$name/bash"
   rm -rf "$o"; mkdir -p "$o"
   ( cd "$READSDIR" && bash "$REPO/proseq2.0.bsh" $BASH_FLAGS \
-      -i "$BWA_INDEX" -c "$CHROM_INFO" -I "$name" -T "$o/tmp" -O "$o" --thread 1 )
+      -i "$BWA_INDEX" -c "$CHROM_INFO" -I "$name" -T "$o/tmp" -O "$o" --thread=1 )
 }
 
 # ---- run the Nextflow port ----
@@ -164,7 +171,7 @@ echo "Datasets:   $DATASETS"
 echo
 
 fails=0
-while read -r name assay layout accession report strand; do
+while read -r name assay layout accession report strand || [ -n "${name:-}" ]; do
   [ -z "${name:-}" ] && continue
   case "$name" in \#*) continue ;; esac
   report="${report:-5prime}"

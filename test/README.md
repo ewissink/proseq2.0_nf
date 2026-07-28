@@ -1,6 +1,6 @@
 # Concordance tests
 
-Validate the Nextflow port by running the **same subsampled reads** through both
+Validation the Nextflow port by running the **same subsampled reads** through both
 `proseq2.0.bsh` (original) and the Nextflow port with matched parameters, then
 diffing the bigWigs. Identical bigWigs ⇒ the port faithfully reproduces the
 original.
@@ -14,7 +14,11 @@ every code path.
 ```bash
 conda env create -f test/environment.yml
 conda activate proseq2.0-nf-test
-# nextflow must also be on PATH
+```
+
+On bioHPC servers at Cornell, load the Nextflow module with
+```bash
+module load nextflow/25.4.3
 ```
 
 The test env pins the **same tool versions** used by the pipeline, so both the
@@ -30,9 +34,7 @@ test/setup_genome.sh dm6         # Drosophila: ~140 Mb, indexes in ~1-2 min (rec
 # test/setup_genome.sh mm10      # or mm10 / hg38 (mammalian bwa index ~1 h, several GB)
 ```
 
-**dm6 (Drosophila) is the easiest target** — tiny/fast, and PRO-seq was developed
-in fly (Kwak et al. 2013), so matched GRO/PRO data is easy to find. Just use
-Drosophila accessions in `datasets.tsv` (fly reads on the fly index).
+**dm6 (Drosophila) is the easiest target**  beacuase it is tiny/fast.
 
 It prints the `--bwa-index` / `--chrom-info` paths to pass along. For *real*
 analysis (not just concordance) add the rDNA sequence (GenBank U13369.1) to the
@@ -41,8 +43,11 @@ FASTA before indexing — see the note in `setup_genome.sh`.
 ## 3. Datasets
 
 Edit `datasets.tsv` and fill in real SRA run accessions (the shipped ones are
-placeholders). Suggested minimal matrix — pick mouse **or** human, stay consistent
-with your index:
+placeholders). The ones chosen are from the following GEO accessions:
+- Single-end GRO-seq: [Fuda et al, Mol Cell Bio 2012](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE77607)
+- Single-end PRO-seq: [Duarte et al, Genes Dev 2016](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE38748)
+- Paired-end PRO-seq: [Judd et al, Genes Dev 20206](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149332)
+
 
 | name           | assay | layout | report | strand   | why |
 |----------------|-------|--------|--------|----------|-----|
@@ -55,17 +60,13 @@ with your index:
 The last three rows can share **one** PE accession — reads are fetched/subsampled
 once and cached, then reused. `3prime` and `opposite` are PE-only.
 
-Find accessions via GEO → "SRA Run Selector" (search the Danko lab or the assay +
-organism). For PE, use libraries with **distinct i7 barcodes** (proseq2.0 requires
-that). `accession` may also be a **local prefix** — `<prefix>.fastq.gz` (SE) or
-`<prefix>_R1.fastq.gz`/`_R2.fastq.gz` (PE) — to skip the download.
 
 ## 4. Run
 
 ```bash
 test/run_concordance.sh \
-  --bwa-index  test/ref/mm10.fa.gz \
-  --chrom-info test/ref/mm10.chromInfo \
+  --bwa-index  test/ref/dm6.fa.gz \
+  --chrom-info test/ref/dm6.chromInfo \
   --reads 1000000 --seed 100
 ```
 
