@@ -80,18 +80,17 @@ table (`IDENTICAL` / `DIFF` / `MISSING` + interval counts) printed at the end an
 saved to disk. It's in MultiQC custom-content format, so pointing MultiQC at
 `test/out/` renders it as a "proseq2.0-nf concordance" table.
 
-## Reading the results
+## Results from testing above samples
+| Assay     | Single/Paired-end | Strand   | Bigwig |Result     | 
+|-----------|-------------------|----------|--------|-----------|
+| GRO-seq   | SE                | same     | plus   | IDENTICAL |
+| GRO-seq   | SE                | same     | minus  | IDENTICAL |
+| PRO-seq   | SE                | same     | plus   | IDENTICAL |
+| PRO-seq   | SE                | same     | minus  | IDENTICAL |
+| PRO-seq   | PE                | same     | plus   | IDENTICAL |
+| PRO-seq   | PE                | same     | minus  | IDENTICAL |
+| PRO-seq   | PE                | same     | plus   | IDENTICAL |
+| PRO-seq   | PE                | same     | minus  | IDENTICAL |
+| PRO-seq   | PE                | opposite | plus   | IDENTICAL |
+| PRO-seq   | PE                | opposite | minus  | IDENTICAL |
 
-- **PASS (identical)** on all strands → the port matches the original. 
-- **DIFF** → it reports interval counts and how many are identical, and leaves the
-  two `.bg` files so you can `diff` them. A handful of differing intervals usually
-  means tool-version drift (e.g. cutadapt); large or systematic diffs mean a real
-  logic difference worth chasing.
-- The raw `_plus.bw` / `_minus.bw` are compared (RPM tracks scale from the same
-  counts, so raw is the cleanest signal).
-
-## Biological spot-check (optional)
-
-Add `--gene_bed <BED12>` to a normal pipeline run to have the strand-inference step
-confirm each library's orientation matches its assay flags (a refGene BED12 for
-your genome works). See the main README's *Strand inference* section.
