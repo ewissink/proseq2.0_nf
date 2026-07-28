@@ -2,7 +2,8 @@
 #
 # setup_genome.sh — download a genome + build the BWA index and chromInfo for testing.
 #
-# Usage: test/setup_genome.sh {mm10|hg38} [OUTDIR]
+# Usage: test/setup_genome.sh {dm6|mm10|hg38} [OUTDIR]
+#   dm6 (Drosophila) is tiny (~140 Mb) -> indexes in ~1-2 min; ideal for the test.
 #
 # NOTE: this is the heavy, one-time step (mammalian `bwa index` takes ~1 h and
 # several GB). If you already have an index, skip this and point run_concordance.sh
@@ -18,12 +19,13 @@ set -euo pipefail
 
 GENOME="${1:-}"
 OUTDIR="${2:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/ref}"
-[ -n "$GENOME" ] || { echo "Usage: $0 {mm10|hg38} [OUTDIR]" >&2; exit 1; }
+[ -n "$GENOME" ] || { echo "Usage: $0 {dm6|mm10|hg38} [OUTDIR]" >&2; exit 1; }
 
 case "$GENOME" in
+  dm6)  BASE="https://hgdownload.soe.ucsc.edu/goldenPath/dm6/bigZips"  ;;
   mm10) BASE="https://hgdownload.soe.ucsc.edu/goldenPath/mm10/bigZips" ;;
   hg38) BASE="https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips" ;;
-  *) echo "ERROR: genome must be mm10 or hg38" >&2; exit 1 ;;
+  *) echo "ERROR: genome must be dm6, mm10 or hg38" >&2; exit 1 ;;
 esac
 
 for tool in wget bwa; do

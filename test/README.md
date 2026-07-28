@@ -23,12 +23,16 @@ are forced single-threaded to remove bwa's multi-thread nondeterminism.
 
 ## 2. Genome (mouse or human)
 
-If you already have a BWA index + chromInfo, use it. Otherwise build one (heavy,
-one-time — mammalian `bwa index` ≈ 1 h, several GB):
+If you already have a BWA index + chromInfo, use it. Otherwise build one:
 
 ```bash
-test/setup_genome.sh mm10        # or: hg38
+test/setup_genome.sh dm6         # Drosophila: ~140 Mb, indexes in ~1-2 min (recommended)
+# test/setup_genome.sh mm10      # or mm10 / hg38 (mammalian bwa index ~1 h, several GB)
 ```
+
+**dm6 (Drosophila) is the easiest target** — tiny/fast, and PRO-seq was developed
+in fly (Kwak et al. 2013), so matched GRO/PRO data is easy to find. Just use
+Drosophila accessions in `datasets.tsv` (fly reads on the fly index).
 
 It prints the `--bwa-index` / `--chrom-info` paths to pass along. For *real*
 analysis (not just concordance) add the rDNA sequence (GenBank U13369.1) to the
