@@ -136,7 +136,10 @@ run_nf() {  # $1=name $2=layout ; uses NF_FLAGS
   else
     echo "${name},${READSDIR}/${name}_R1.fastq.gz,${READSDIR}/${name}_R2.fastq.gz" >> "$sheet"
   fi
-  ( cd "$o" && nextflow run "$REPO/main.nf" -profile conda $NF_FLAGS \
+  # No -profile conda: use the tools already on PATH (the activated test env),
+  # so BOTH pipelines run identical tool versions and we skip a slow per-run
+  # conda-env build. (For real analysis runs, use -profile conda/mamba instead.)
+  ( cd "$o" && nextflow run "$REPO/main.nf" $NF_FLAGS \
       --input "$sheet" --bwa_index "$BWA_INDEX" --chrom_info "$CHROM_INFO" \
       --outdir "$o/results" --max_cpus 1 --skip_fastqc --skip_multiqc )
 }
