@@ -148,24 +148,28 @@ run_nf() {  # $1=name $2=layout ; uses NF_FLAGS
 # Match by CONTENT, not filename: the original leaves a spurious _QC / _QC_end in
 # its output names (fragile name-mangling in proseq2.0.bsh), while the port names
 # them <sample>_<strand>.bw. So glob each side's raw (non-.rpm) bigWig for the strand.
-compare_bw() {  # $1=name $2=strand(plus|minus)
+compare_bw() {  # $1=name $2=strand(plus|minus) ; appends a row to $SUMMARY
   local name="$1" s="$2" a b
   a=$(ls "$OUTDIR/$name/bash/"*_"${s}.bw" 2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
   b=$(ls "$OUTDIR/$name/nf/results/bigwig/"*_"${s}.bw" 2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
   if [ -z "$a" ] || [ -z "$b" ]; then
     printf "    %-6s MISSING (bash:%s nf:%s)\n" "$s" "$( [ -n "$a" ] && echo ok || echo -- )" "$( [ -n "$b" ] && echo ok || echo -- )"
+    printf '%s\tMISSING\t0\t0\t0\n' "${name}_${s}" >> "$SUMMARY"
     return 1
   fi
   local ta="$OUTDIR/$name/_${s}_bash.bg" tb="$OUTDIR/$name/_${s}_nf.bg"
   bigWigToBedGraph "$a" "$ta"; bigWigToBedGraph "$b" "$tb"
-  if cmp -s "$ta" "$tb"; then
-    printf "    %-6s PASS (identical)\n" "$s"; rm -f "$ta" "$tb"; return 0
-  fi
   local la lb both
   la=$(wc -l < "$ta"); lb=$(wc -l < "$tb")
+  if cmp -s "$ta" "$tb"; then
+    printf "    %-6s PASS (identical)\n" "$s"
+    printf '%s\tIDENTICAL\t%s\t%s\t%s\n' "${name}_${s}" "$la" "$lb" "$la" >> "$SUMMARY"
+    rm -f "$ta" "$tb"; return 0
+  fi
   both=$(comm -12 <(sort "$ta") <(sort "$tb") | wc -l)
   printf "    %-6s DIFF  bash=%s nf=%s intervals; %s identical -> inspect %s vs %s\n" \
     "$s" "$la" "$lb" "$both" "$ta" "$tb"
+  printf '%s\tDIFF\t%s\t%s\t%s\n' "${name}_${s}" "$la" "$lb" "$both" >> "$SUMMARY"
   return 1
 }
 
@@ -175,6 +179,18 @@ echo "BWA index:  $BWA_INDEX"
 echo "Reads/seed: $READS / $SEED"
 echo "Datasets:   $DATASETS"
 echo
+
+# Concordance report as MultiQC custom content (also a plain TSV you can open).
+SUMMARY="$OUTDIR/concordance_mqc.tsv"
+{
+  echo "# id: 'proseq_concordance'"
+  echo "# section_name: 'proseq2.0-nf concordance (port vs original)'"
+  echo "# description: 'bigWig agreement between the Nextflow port and proseq2.0.bsh on identical subsampled reads.'"
+  echo "# plot_type: 'table'"
+  echo "# pconfig:"
+  echo "#     id: 'proseq_concordance_table'"
+  printf 'Sample\tResult\tbash intervals\tnf intervals\tshared\n'
+} > "$SUMMARY"
 
 fails=0
 while read -r name assay layout accession report strand || [ -n "${name:-}" ]; do
@@ -195,10 +211,14 @@ while read -r name assay layout accession report strand || [ -n "${name:-}" ]; d
   echo
 done < "$DATASETS"
 
+echo "Concordance summary  (report: $SUMMARY):"
+grep -v '^#' "$SUMMARY" | column -t -s $'\t' | sed 's/^/  /'
+echo
+
 if [ "$fails" -eq 0 ]; then
   echo "ALL bigWigs identical — port matches proseq2.0.bsh."
 else
-  echo "$fails strand comparison(s) differed — see the .bg files noted above."
+  echo "$fails strand comparison(s) not identical — see the report / .bg files above."
   echo "(Small diffs can come from tool-version drift; large diffs mean a logic bug.)"
   exit 1
 fi

@@ -75,6 +75,11 @@ seed so pairs stay matched), runs both pipelines into `test/out/<name>/{bash,nf}
 and prints `PASS (identical)` or a `DIFF` summary per strand. Exit code is non-zero
 if anything differs.
 
+Results are also written to **`test/out/concordance_mqc.tsv`** — a per-`sample_strand`
+table (`IDENTICAL` / `DIFF` / `MISSING` + interval counts) printed at the end and
+saved to disk. It's in MultiQC custom-content format, so pointing MultiQC at
+`test/out/` renders it as a "proseq2.0-nf concordance" table.
+
 ## Reading the results
 
 - **PASS (identical)** on all strands → the port matches the original. 
