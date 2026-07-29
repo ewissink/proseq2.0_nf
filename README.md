@@ -46,7 +46,8 @@ Plus optional QC (on by default):
 ## Inputs
 
 **Samplesheet** (`--input`, CSV with a header). Leave `fastq_2` empty for
-single-end samples:
+single-end samples. For technical replicates, include two rows with the
+same sample name, and the fastq files will be concatenated in the pipeline.
 
 ```csv
 sample,fastq_1,fastq_2
@@ -54,42 +55,32 @@ sampleA_PE,/data/sampleA_R1.fastq.gz,/data/sampleA_R2.fastq.gz
 sampleB_SE,/data/sampleB.fastq.gz,
 ```
 
-**Technical replicates:** give multiple rows the **same `sample` name** and their
-fastqs are concatenated (R1s together, R2s together) before preprocessing — one
-merged sample flows through the rest of the pipeline. Single-row samples skip the
-merge step entirely. All rows for a sample must be the same layout (all SE or all PE).
-
-```csv
-sample,fastq_1,fastq_2
-sampleA,/data/sampleA_L001_R1.fastq.gz,/data/sampleA_L001_R2.fastq.gz
-sampleA,/data/sampleA_L002_R1.fastq.gz,/data/sampleA_L002_R2.fastq.gz
-```
-
 **Reference**:
 - `--bwa_index` — the **prefix** of a `bwa index` (no `.bwt` suffix). All
   `PREFIX.*` files are staged automatically.
 - `--chrom_info` — a 2-column `chrom<TAB>size` table.
 
-See the genome notes in the original [`README_proseq2.0.md`](README_proseq2.0.md) (include rDNA, strip
-`*_hap`/`*_random`; rRNA and chrM are removed from bigWigs).
+The reference genome should not include any alternative haplotypes. To create your own BWA index and 
+ chrom_info file for `mm10`, `hg38`, or `dm6`,use the the following
+with the correct genome:
+```bash
+bin/setup_genome.sh <genome>
+```
 
-## Usage
+The original pipeline aligned to a reference genome that included the rRNA transcript, then
+removed rRNA-matching reads after-the-fact. That is still possible here; however, rRNA can
+instead be removed using SortMeRNA prior to alignment.
+
+## Minimal usage
 
 ```bash
-# Single-end GRO-seq (5′ of nascent RNA), 6 bp UMI on R1 -> dedup
-nextflow run main.nf -profile conda \
+nextflow run main.nf -profile <conda/docker/singularity> \
     --input samplesheet.csv \
-    --bwa_index /ref/hg19.rRNA --chrom_info /ref/hg19.chromInfo \
+    --bwa_index <bwa-path> \
+    --chrom_info <chrom_info-path> \
     --outdir results \
-    --se_read RNA_5prime --umi1 6
+    --assay <PRO/GRO/ChRO> --umi1 <n>
 
-# Paired-end ChRO-seq, RNA 3′ at 5′-end of R1, 6 bp UMI on R1
-nextflow run main.nf -profile docker \
-    --input samplesheet.csv \
-    --bwa_index /ref/canFam3.rRNA --chrom_info /ref/canFam3.chromInfo \
-    --outdir results \
-    --rna3 R1_5prime --umi1 6 \
-    --adapter1 GATCGTCGGACTGTAGAACTCTGAAC --adapter2 TGGAATTCTCGGGTGCCAAGG
 ```
 
 `nextflow run main.nf --help` prints the option summary. Add `-resume` to reuse
