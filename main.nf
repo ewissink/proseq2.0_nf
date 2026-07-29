@@ -7,6 +7,8 @@ nextflow.enable.dsl = 2
 
 include { PREPROCESS_SE } from './modules/local/preprocess_se'
 include { PREPROCESS_PE } from './modules/local/preprocess_pe'
+include { CAT_FASTQ_SE  } from './modules/local/cat_fastq_se'
+include { CAT_FASTQ_PE  } from './modules/local/cat_fastq_pe'
 include { SORTMERNA_SE  } from './modules/local/sortmerna_se'
 include { SORTMERNA_PE  } from './modules/local/sortmerna_pe'
 include { BWA_ALIGN_SE  } from './modules/local/bwa_align_se'
@@ -107,8 +109,8 @@ workflow {
              "map5=${strand.map5} opposite_strand=${strand.opp}" +
              (params.assay ? " (from --assay ${params.assay})" : "")
 
-    // --- read samplesheet -> [meta, reads] ---
-    ch_input = Channel.fromPath(params.input, checkIfExists: true)
+    // --- read samplesheet -> one [meta, reads] per row ---
+    ch_rows = Channel.fromPath(params.input, checkIfExists: true)
         | splitCsv(header: true)
         | map { row ->
             if (!row.sample)   error "Samplesheet row missing 'sample' column: ${row}"
@@ -131,7 +133,37 @@ workflow {
             }
         }
 
-    ch_input
+    // --- group technical replicates: rows sharing `sample` are concatenated ---
+    ch_grouped = ch_rows
+        .map { meta, reads -> [ meta.id, meta, reads ] }
+        .groupTuple()
+        .map { id, metas, rlist ->
+            if (metas.collect { it.single_end }.unique().size() > 1)
+                error "Sample '${id}' mixes single-end and paired-end rows in the samplesheet."
+            [ metas[0], rlist ]   // rlist = list of per-row read-lists
+        }
+
+    ch_grouped
+        .branch { meta, rlist -> multi: rlist.size() > 1
+                                 single: true }
+        .set { ch_rep }
+
+    // single-row samples pass straight through (no concat)
+    ch_single = ch_rep.single.map { meta, rlist -> [ meta, rlist[0] ] }
+
+    // multi-row samples: concatenate R1s (and R2s) in order
+    ch_rep.multi
+        .branch { meta, rlist -> se: meta.single_end
+                                 pe: !meta.single_end }
+        .set { ch_multi }
+    CAT_FASTQ_SE( ch_multi.se.map { meta, rlist -> [ meta, rlist.collect { it[0] }.sort() ] } )
+    CAT_FASTQ_PE( ch_multi.pe.map { meta, rlist -> [ meta, rlist.collect { it[0] }.sort(), rlist.collect { it[1] }.sort() ] } )
+
+    ch_reads = ch_single
+        .mix( CAT_FASTQ_SE.out.reads.map { meta, r      -> [ meta, [ r ] ] } )
+        .mix( CAT_FASTQ_PE.out.reads.map { meta, r1, r2 -> [ meta, [ r1, r2 ] ] } )
+
+    ch_reads
         .branch { meta, reads ->
             se: meta.single_end
             pe: !meta.single_end
@@ -167,8 +199,8 @@ workflow {
     ch_multiqc = Channel.empty()
 
     if (!params.skip_fastqc) {
-        // raw reads: ch_input carries [meta, [reads]] for both SE and PE
-        FASTQC_RAW( ch_input, 'raw' )
+        // raw reads (post-merge): ch_reads carries [meta, [reads]] for SE and PE
+        FASTQC_RAW( ch_reads, 'raw' )
 
         // trimmed reads, normalized to [meta, [reads]]
         ch_trim = PREPROCESS_SE.out.reads.map { meta, r -> [ meta, [ r ] ] }

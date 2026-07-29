@@ -3,7 +3,8 @@
 A [Nextflow](https://www.nextflow.io/) DSL2 port of the Danko-Lab **proseq2.0**
 pipeline for preprocessing and aligning Run-On sequencing (PRO-seq / GRO-seq /
 ChRO-seq) data. It reproduces the logic of the original `proseq2.0.bsh` script,
-decomposed into per-sample, resumable, parallelizable processes.
+decomposed into per-sample, resumable, parallelizable processes. Comparison 
+showing the two pipelines have identical outputs are available [here](https://github.com/ewissink/proseq2.0_nf/tree/main/test).
 
 The original bash script (`proseq2.0.bsh`) is untouched and still works; its
 documentation is preserved in [`README_proseq2.0.md`](README_proseq2.0.md). This
@@ -51,6 +52,17 @@ single-end samples:
 sample,fastq_1,fastq_2
 sampleA_PE,/data/sampleA_R1.fastq.gz,/data/sampleA_R2.fastq.gz
 sampleB_SE,/data/sampleB.fastq.gz,
+```
+
+**Technical replicates:** give multiple rows the **same `sample` name** and their
+fastqs are concatenated (R1s together, R2s together) before preprocessing — one
+merged sample flows through the rest of the pipeline. Single-row samples skip the
+merge step entirely. All rows for a sample must be the same layout (all SE or all PE).
+
+```csv
+sample,fastq_1,fastq_2
+sampleA,/data/sampleA_L001_R1.fastq.gz,/data/sampleA_L001_R2.fastq.gz
+sampleA,/data/sampleA_L002_R1.fastq.gz,/data/sampleA_L002_R2.fastq.gz
 ```
 
 **Reference**:
