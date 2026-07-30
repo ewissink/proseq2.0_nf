@@ -103,19 +103,22 @@ other pipeline flags. These are based on published methods for creating these ty
 | `PROcap`     | `rna_5prime` |`rna_5prime` |  false |
 | `ChRO`    | `rna_3prime`  | `rna_3prime` | false |
 
+Report can be set to `both` for paired-end PRO-cap libraries, in which
+the TSS and active site can be captured.
+
 Any explicit flag (`--re_start`, `--report`, `--antisense`) 
 **overrides** the preset. 
 
 
 ## Options
 
-| Parameter   |  Purpose&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;   | Default | Options        |
+| Parameter   |  Purpose | Default | Options        |
 |-------------|--------------------------------------------------------------|---------|----------------|
-| `--assay` |  set geometry for read reporting (see above for details) | none | `{GRO\|PRO\|ChRO\|GROcap\|PROcap`} | 
-| `--read_start` | RNA end sits at the read's (SE) / R1's (PE) 5' end, based on assay. Overrides `--assay` preset | `{rna_3prime\|rna_5prime}` |
-| `--report` | paired-end only; sets the RNA end to record in bigWigs; both is useful for PRO-cap where TSS and active site can be captured | `--read_start` parameter | `{rna_3prime\|rna_5prime\|both}`} |
+| `--assay` |  set geometry for read reporting | none | `{GRO\|PRO\|ChRO\|GROcap\|PROcap`} | 
+| `--read_start` | RNA side to read, depending on assay. Overrides `--assay` preset | `{rna_3prime\|rna_5prime}` |
+| `--report` | PE only; sets the RNA end to record in bigWigs  | `--read_start` parameter | `{rna_3prime\|rna_5prime\|both}`} |
 | `--antisense` | report on the opposite (antisense) strand | `false` | `{false\|true}` |
-| `--adapter_se` | Adapter sequence trimmed in single-end sequencing | `'TGGAATTCTCGGGTGCCAAGG'` | string of adapter sequence |
+| `--adapter_se` | Adapter sequence trimmed in SE sequencing | `'TGGAATTCTCGGGTGCCAAGG'` | string of adapter sequence |
 | `--adapter1` | Adapter sequence trimmed from R2 | `'GATCGTCGGACTGTAGAACTCTGAACG'` | `string` of adapter sequence |
 | `--adapter2` | Adapter sequence trimmed from R1 | `'AGATCGGAAGAGCACACGTCTGAACTC'` | `string` of adapter sequence |
 | `--umi1` | length of UMI on R1 | 0 | `integer` of UMI length |
@@ -125,10 +128,10 @@ Any explicit flag (`--re_start`, `--report`, `--antisense`)
 | `--force_deduplicate` | deduplicate in absence of UMIs | `false` | `{false\|true}` |
 | `--aligner` |choice between BWA-backtrack (`aln`) or BWA-mem (`mem`) | SE->`aln`, PE->`mem`| `{aln\|mem}` |
 | `--dreg` | use dREG-compatible parameters, only for SE | `false` | `{false\|true}` |
-| `--map_length` | align whole read (0) or set a data-set wide length cutoff for mapping (other integer) | 0 | `integer` of read-length to align |
+| `--map_length` | align whole read (0) or set a data-set wide length cutoff | 0 | `integer` of read-length to align |
 | `--skip_fastqc` | Don't run FastQC on raw and trimmed reads | `false` | `{false\|true}` |
 | `--skip_multiqc` | Don't run MultiQC at end of run | `false` | `{false\|true}` |
-| `--gene_bed` | when set, run RSeQC strand inference and warn if it doesn't match configured strand | `null` | path to BED12 gene model for your species |
+| `--gene_bed` | when set, run RSeQC strand inference | `null` | path to BED12 gene model for your species |
 | `--remove_rrna` | Run pre-alignment rRNA depletion | `false` | `{false\|true}` |
 | `--rrna_refs` | Required when running `--remove_rna` | `null` | path to rRNA reference FASTA(s) |
 
