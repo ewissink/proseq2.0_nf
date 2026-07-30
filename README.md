@@ -109,8 +109,8 @@ Any explicit flag (`--re_start`, `--report`, `--antisense`)
 
 ## Options
 
-| Parameter   |  Purpose         | Default            | Options |
-|------------------|------------------|--------------------|---------|
+| Parameter   |  Purpose                                                     | Default | Options        |
+|-------------|--------------------------------------------------------------|---------|----------------|
 | `--assay` |  set geometry for read reporting (see above for details) | none | `{GRO\|PRO\|ChRO\|GROcap\|PROcap`} | 
 | `--read_start` | RNA end sits at the read's (SE) / R1's (PE) 5' end, based on assay. Overrides `--assay` preset | `{rna_3prime\|rna_5prime}` |
 | `--report` | paired-end only; sets the RNA end to record in bigWigs; both is useful for PRO-cap where TSS and active site can be captured | `--read_start` parameter | `{rna_3prime\|rna_5prime\|both}`} |
@@ -167,6 +167,9 @@ subsample) check the data against your configured geometry. Per sample you get
 and the raw RSeQC output flows into the MultiQC report. A `WARN` means the data's
 orientation disagrees with your flags (e.g. swapped R1/R2, or wrong assay) — the
 pipeline still completes; it does not auto-change your settings.
+
+BED12 files can be downloaded from [RSeQC](https://sourceforge.net/projects/rseqc/files/BED/)
+for many species.
 
 ## rRNA removal
 
