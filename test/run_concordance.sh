@@ -73,13 +73,20 @@ map_flags() {  # $1=assay $2=layout $3=report $4=strand ; sets BASH_FLAGS, NF_FL
     PRO:PE|ChRO:PE)  BASH_FLAGS="-PE --RNA3=R1_5prime"; NF_FLAGS="--assay ChRO" ;;
     *) echo "ERROR: unsupported assay:layout '$1:$2'" >&2; return 1 ;;
   esac
-  if [ "$3" = "3prime" ]; then
-    [ "$2" = "PE" ] || { echo "ERROR: report=3prime is PE-only ($1:$2)" >&2; return 1; }
-    BASH_FLAGS="$BASH_FLAGS -3"; NF_FLAGS="$NF_FLAGS --map5 false"
+  # PE reporting: bash defaults to 5'; the NF port defaults to the captured end,
+  # so pass --report explicitly to match the bash side.
+  if [ "$2" = "PE" ]; then
+    if [ "$3" = "3prime" ]; then
+      BASH_FLAGS="$BASH_FLAGS -3"; NF_FLAGS="$NF_FLAGS --report rna_3prime"
+    else
+      NF_FLAGS="$NF_FLAGS --report rna_5prime"
+    fi
+  elif [ "$3" = "3prime" ]; then
+    echo "ERROR: report=3prime is PE-only ($1:$2)" >&2; return 1
   fi
   if [ "$4" = "opposite" ]; then
     [ "$2" = "PE" ] || { echo "ERROR: strand=opposite is PE-only ($1:$2)" >&2; return 1; }
-    BASH_FLAGS="$BASH_FLAGS -s"; NF_FLAGS="$NF_FLAGS --opposite_strand true"
+    BASH_FLAGS="$BASH_FLAGS -s"; NF_FLAGS="$NF_FLAGS --antisense"
   fi
 }
 

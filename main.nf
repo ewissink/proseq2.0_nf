@@ -24,32 +24,28 @@ include { MULTIQC       } from './modules/local/multiqc'
 // Helpers
 // -----------------------------------------------------------------------------
 
-// Expand the --assay preset into the SE/PE geometry. Individual flags override it.
-//   GRO  : capture RNA 5' end  -> SE -G ; PE RNA 5' at R1 (rna3=R2_5prime)
-//   PRO  : capture RNA 3' end  -> SE -P ; PE RNA 3' at R1 (rna3=R1_5prime)
-//   ChRO : same geometry as PRO-seq (PE run-on)
-def effectiveGeometry() {
+// Resolve the library geometry (RNA-end centric) from --assay + low-level flags.
+//   read_start : which RNA end sits at the read's (SE) / R1's (PE) 5' end.
+//     rna_5prime = 5' methods (GRO-seq, PRO-cap, GRO-cap) -> read is SENSE to the gene
+//     rna_3prime = 3' methods (PRO-seq, ChRO-seq)         -> read is ANTISENSE
+//   report (PE): which RNA end to record (rna_5prime | rna_3prime | both); default = read_start.
+//   antisense  : report on the opposite strand.
+def resolveGeometry() {
     def assay = params.assay ? params.assay.toString().toUpperCase() : null
-    if (assay && !(assay in ['GRO', 'PRO', 'CHRO']))
-        error "--assay must be one of GRO, PRO, ChRO (got '${params.assay}')."
-    def assay_se_read = (assay == 'PRO' || assay == 'CHRO') ? 'RNA_3prime' : 'RNA_5prime'
-    def assay_rna3    = (assay == 'PRO' || assay == 'CHRO') ? 'R1_5prime'  : 'R2_5prime'
-    return [
-        se_read: params.se_read ?: (assay ? assay_se_read : 'RNA_3prime'),   // SE default: PRO (-P)
-        rna3   : params.rna3    ?: (assay ? assay_rna3    : 'R1_5prime'),   // PE default: PRO/ChRO
-    ]
-}
+    def ASSAY_READ_START = [ GRO:'rna_5prime', PROCAP:'rna_5prime', GROCAP:'rna_5prime',
+                             PRO:'rna_3prime', CHRO:'rna_3prime' ]
+    if (assay && !ASSAY_READ_START.containsKey(assay))
+        error "--assay must be one of GRO, PRO, ChRO, PROcap, GROcap (got '${params.assay}')."
 
-// Reproduce the SE -G/-P and PE --RNA5/--RNA3 derivation logic from proseq2.0.bsh
-def deriveStrand(String rna3_in) {
-    def rna5 = params.rna5
-    def rna3 = rna3_in
-    if (!rna5 && !rna3) rna5 = 'R1_5prime'
-    if (rna3 == 'R1_5prime')      rna5 = 'R2_5prime'
-    else if (rna3 == 'R2_5prime') rna5 = 'R1_5prime'
-    if (rna5 != 'R1_5prime' && rna5 != 'R2_5prime')
-        error "--rna5/--rna3 must resolve to R1_5prime or R2_5prime (got rna5=${rna5}, rna3=${rna3})"
-    return [ rna5: rna5, rna3: rna3, map5: (params.map5 as boolean), opp: (params.opposite_strand as boolean) ]
+    def read_start = params.read_start ?: (assay ? ASSAY_READ_START[assay] : 'rna_3prime')
+    if (!(read_start in ['rna_5prime', 'rna_3prime']))
+        error "--read_start must be rna_5prime or rna_3prime (got '${read_start}')."
+
+    def report = params.report ?: read_start   // default: report the captured end
+    if (!(report in ['rna_5prime', 'rna_3prime', 'both']))
+        error "--report must be rna_5prime, rna_3prime or both (got '${report}')."
+
+    return [ read_start: read_start, report: report, antisense: (params.antisense as boolean) ]
 }
 
 def helpMessage() {
@@ -73,12 +69,12 @@ def helpMessage() {
       --chrom_info   chromInfo table (chrom <TAB> size)
 
     Key options (see nextflow.config for all + defaults):
-      Assay: --assay {GRO|PRO|ChRO}   preset for the SE/PE geometry below
-                                      (default, no assay: PRO/ChRO geometry)
-      SE:  --se_read {RNA_3prime|RNA_5prime}   PRO-seq (-P) | GRO-seq (-G)   [default RNA_3prime]
-      PE:  --rna5/--rna3 {R1_5prime|R2_5prime}   [default --rna3 R1_5prime]
-           --map5 {true|false}   --opposite_strand {true|false}
-           (individual flags override --assay)
+      Assay: --assay {GRO|PRO|ChRO|PROcap|GROcap}   preset for the geometry below
+      Geom:  --read_start {rna_3prime|rna_5prime}   which RNA end is at the read/R1 5' end
+                 rna_3prime = 3' methods (PRO/ChRO) | rna_5prime = 5' (GRO/*cap)  [default rna_3prime]
+             --report {rna_5prime|rna_3prime|both}  PE only; which RNA end to record  [default = read_start]
+             --antisense                            report on the opposite strand
+             (--read_start/--report/--antisense override --assay)
       UMI: --umi1 N --umi2 N --add_b1 N --add_b2 N --force_deduplicate {true|false}
       Map: --aligner {aln|mem}  --dreg  --map_length N
       rRNA:--remove_rrna --rrna_refs FILE[,FILE...]   SortMeRNA pre-alignment rRNA depletion
@@ -108,10 +104,16 @@ workflow {
     def bwa_prefix = file(params.bwa_index).name
     ch_chrom_info = file(params.chrom_info, checkIfExists: true)
 
-    def geom   = effectiveGeometry()
-    def strand = deriveStrand(geom.rna3)
-    log.info "Geometry: SE se_read=${geom.se_read} | PE rna5=${strand.rna5} rna3=${strand.rna3} " +
-             "map5=${strand.map5} opposite_strand=${strand.opp}" +
+    def geom = resolveGeometry()
+    // Derived internals:
+    //   primary read (SE read / R1) is SENSE to genes iff its 5' end is the RNA 5' end
+    def expected_sense = (geom.read_start == 'rna_5prime')
+    //   PE: which mate's 5' end is the RNA 5' end
+    def rna5_mate = expected_sense ? 'R1_5prime' : 'R2_5prime'
+    //   SE: report read 5' end same strand (G) if read sense, flipped (P) if antisense;
+    //       --antisense toggles it
+    def se_output = ((expected_sense) != geom.antisense) ? 'G' : 'P'
+    log.info "Geometry: read_start=${geom.read_start} report=${geom.report} antisense=${geom.antisense}" +
              (params.assay ? " (from --assay ${params.assay})" : "")
 
     // --- read samplesheet -> one [meta, reads] per row ---
@@ -120,20 +122,17 @@ workflow {
         | map { row ->
             if (!row.sample)   error "Samplesheet row missing 'sample' column: ${row}"
             if (!row.fastq_1)  error "Samplesheet row '${row.sample}' missing fastq_1."
-            def meta = [ id: row.sample.trim() ]
+            def meta = [ id: row.sample.trim(), expected_sense: expected_sense ]
             def r1 = file(row.fastq_1.trim(), checkIfExists: true)
             if (row.fastq_2?.trim()) {
                 meta.single_end = false
-                meta.rna5 = strand.rna5; meta.rna3 = strand.rna3
-                meta.map5 = strand.map5; meta.opp  = strand.opp
-                // primary read (R1) is sense to genes iff RNA 5' end is at R1's 5' end
-                meta.expected_sense = (strand.rna5 == 'R1_5prime')
+                meta.rna5   = rna5_mate
+                meta.opp    = geom.antisense
+                meta.report = geom.report
                 return [ meta, [ r1, file(row.fastq_2.trim(), checkIfExists: true) ] ]
             } else {
                 meta.single_end = true
-                meta.se_output  = (geom.se_read == 'RNA_5prime') ? 'G' : 'P'
-                // SE read is sense to genes for GRO (-G), antisense for PRO (-P)
-                meta.expected_sense = (meta.se_output == 'G')
+                meta.se_output  = se_output
                 return [ meta, [ r1 ] ]
             }
         }
