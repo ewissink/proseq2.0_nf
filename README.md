@@ -129,6 +129,7 @@ Any explicit flag (`--re_start`, `--report`, `--antisense`)
 | `--aligner` |choice between BWA-backtrack (`aln`) or BWA-mem (`mem`) | SE->`aln`, PE->`mem`| `{aln\|mem}` |
 | `--dreg` | use dREG-compatible parameters, only for SE | `false` | `{false\|true}` |
 | `--map_length` | align whole read (0) or set a data-set wide length cutoff | 0 | `integer` of read-length to align |
+| `--skip_adapter_detect` | Don't run adatper detection | `false` | `{false\|true}` |
 | `--skip_fastqc` | Don't run FastQC on raw and trimmed reads | `false` | `{false\|true}` |
 | `--skip_multiqc` | Don't run MultiQC at end of run | `false` | `{false\|true}` |
 | `--gene_bed` | when set, run RSeQC strand inference | `null` | path to BED12 gene model for your species |
