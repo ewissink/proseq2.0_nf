@@ -30,7 +30,7 @@ are forced single-threaded to remove bwa's multi-thread nondeterminism.
 If you already have a BWA index + chromInfo, use it. Otherwise build one:
 
 ```bash
-test/setup_genome.sh dm6         # Drosophila: ~140 Mb, indexes in ~1-2 min (recommended)
+bin/setup_genome.sh dm6         # Drosophila: ~140 Mb, indexes in ~1-2 min (recommended)
 # test/setup_genome.sh mm10      # or mm10 / hg38 (mammalian bwa index ~1 h, several GB)
 ```
 
