@@ -1,8 +1,7 @@
 process DETECT_ADAPTER_SE {
     tag   "$meta.id"
     label 'process_low'
-    // own env: fastp's libdeflate conflicts with the pinned bedtools=2.28.0
-    conda "conda-forge::python=3.11 bioconda::fastp=0.23.4"
+    conda "${projectDir}/env/environment.yml"
 
     publishDir "${params.outdir}/qc/adapter", mode: params.publish_mode,
         pattern: "*.{fastp.json,adapter_check.txt}"

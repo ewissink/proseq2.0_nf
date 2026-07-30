@@ -3,19 +3,20 @@ channels:
   - conda-forge
   - bioconda
   - defaults
+# Pipeline env for real `-profile conda` runs — modern, fast-solving versions.
+# The concordance TEST env (test/environment.yml) stays frozen at the original
+# tool versions, so validation of the port vs proseq2.0.bsh is unaffected.
 dependencies:
-  - cutadapt=4.4          # original spec was 1.8.3, but `-j` threading needs >=1.15
-  - fastx_toolkit=0.0.14  # fastx_trimmer
+  - cutadapt=4.9
   - seqtk=1.4
   - prinseq=0.20.4        # provides prinseq-lite.pl
-  - bwa=0.7.17
-  - samtools=1.9
-  - bedtools=2.28.0
+  - bwa=0.7.18
+  - samtools=1.21
+  - bedtools=2.31.1
   - bedops=2.4.41         # provides sort-bed
-  - ucsc-bedgraphtobigwig=445
+  - ucsc-bedgraphtobigwig # unpinned (bioconda per-tool versions vary)
   - fastqc=0.12.1
   - multiqc=1.21
   - rseqc=5.0.3           # infer_experiment.py for strand inference
   - sortmerna=4.3.6       # optional pre-alignment rRNA removal
-  # NB: fastp (adapter detection) lives in its own per-process env — its modern
-  # libdeflate conflicts with the pinned bedtools=2.28.0.
+  - fastp=0.23.4          # de-novo adapter detection
