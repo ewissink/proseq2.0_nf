@@ -148,7 +148,7 @@ run_nf() {  # $1=name $2=layout ; uses NF_FLAGS
   # conda-env build. (For real analysis runs, use -profile conda/mamba instead.)
   ( cd "$o" && nextflow run "$REPO/main.nf" $NF_FLAGS \
       --input "$sheet" --bwa_index "$BWA_INDEX" --chrom_info "$CHROM_INFO" \
-      --outdir "$o/results" --max_cpus 1 --skip_fastqc --skip_multiqc )
+      --outdir "$o/results" --max_cpus 1 --skip_fastqc --skip_multiqc --skip_adapter_detect )
 }
 
 # ---- compare one strand's bigWig; returns 0 on exact match ----

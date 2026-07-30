@@ -14,6 +14,8 @@ include { SORTMERNA_PE  } from './modules/local/sortmerna_pe'
 include { BWA_ALIGN_SE  } from './modules/local/bwa_align_se'
 include { BWA_ALIGN_PE  } from './modules/local/bwa_align_pe'
 include { MAKE_BIGWIG   } from './modules/local/make_bigwig'
+include { DETECT_ADAPTER_SE } from './modules/local/detect_adapter_se'
+include { DETECT_ADAPTER_PE } from './modules/local/detect_adapter_pe'
 include { FASTQC as FASTQC_RAW  } from './modules/local/fastqc'
 include { FASTQC as FASTQC_TRIM } from './modules/local/fastqc'
 include { COLLECT_STATS } from './modules/local/collect_stats'
@@ -79,6 +81,7 @@ def helpMessage() {
       Map: --aligner {aln|mem}  --dreg  --map_length N
       rRNA:--remove_rrna --rrna_refs FILE[,FILE...]   SortMeRNA pre-alignment rRNA depletion
       QC:  --gene_bed FILE   BED12 gene model -> RSeQC strand inference (validate & warn)
+           --skip_adapter_detect   (fastp adapter detection, validate-and-warn; on by default)
            --skip_fastqc  --skip_multiqc
       Res: --max_cpus N   --max_memory '16.GB'   --max_time '24.h'
     """.stripIndent()
@@ -180,6 +183,12 @@ workflow {
     ch_pe_reads = ch_branched.pe.map { meta, reads -> [ meta, reads[0], reads[1] ] }
     PREPROCESS_PE( ch_pe_reads )
 
+    // --- adapter detection on raw reads (validate-and-warn; never changes trimming) ---
+    if (!params.skip_adapter_detect) {
+        DETECT_ADAPTER_SE( ch_se_reads )
+        DETECT_ADAPTER_PE( ch_pe_reads )
+    }
+
     // --- optional rRNA depletion (SortMeRNA), else pass QC'd reads straight through ---
     def ch_se_to_align = PREPROCESS_SE.out.reads
     def ch_pe_to_align = PREPROCESS_PE.out.reads
@@ -218,6 +227,9 @@ workflow {
         PREPROCESS_SE.out.cutadapt,
         PREPROCESS_PE.out.cutadapt
     )
+    if (!params.skip_adapter_detect) {
+        ch_multiqc = ch_multiqc.mix( DETECT_ADAPTER_SE.out.json, DETECT_ADAPTER_PE.out.json )
+    }
     if (params.remove_rrna) {
         ch_multiqc = ch_multiqc.mix( SORTMERNA_SE.out.log, SORTMERNA_PE.out.log )
     }

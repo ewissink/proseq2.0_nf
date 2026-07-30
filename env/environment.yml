@@ -17,3 +17,4 @@ dependencies:
   - multiqc=1.21
   - rseqc=5.0.3           # infer_experiment.py for strand inference
   - sortmerna=4.3.6       # optional pre-alignment rRNA removal
+  - fastp=0.23.4          # de-novo adapter detection (validate-and-warn)
