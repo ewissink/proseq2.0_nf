@@ -118,7 +118,7 @@ These presets are correct for GRO-/PRO-seq and have not been tested for GRO-/PRO
 |--------------------------|---------------------------|---------------------------------|
 |
 | `-G` / `-P`              | `--se_read`               | `RNA_3prime` (`-P`; `RNA_5prime`=G) |
-| `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R2_5prime`              |
+| `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R1_5prime` (PRO/ChRO)   |
 | `-5` / `-3` (`--map5`)   | `--map5`                  | `true`                          |
 | `-s`                     | `--opposite_strand`       | `false`                         |
 | `--ADAPT_SE`             | `--adapter_se`            | `TGGAATTCTCGGGTGCCAAGG`         |

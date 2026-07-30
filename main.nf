@@ -36,7 +36,7 @@ def effectiveGeometry() {
     def assay_rna3    = (assay == 'PRO' || assay == 'CHRO') ? 'R1_5prime'  : 'R2_5prime'
     return [
         se_read: params.se_read ?: (assay ? assay_se_read : 'RNA_3prime'),   // SE default: PRO (-P)
-        rna3   : params.rna3    ?: (assay ? assay_rna3    : 'R2_5prime'),
+        rna3   : params.rna3    ?: (assay ? assay_rna3    : 'R1_5prime'),   // PE default: PRO/ChRO
     ]
 }
 
