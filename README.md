@@ -75,7 +75,7 @@ instead be removed using SortMeRNA prior to alignment.
 
 ```bash
 nextflow run main.nf -profile <conda/docker/singularity> \
-    --input samplesheet.csv \
+    --input <samplesheet-path> \
     --bwa_index <bwa-path> \
     --chrom_info <chrom_info-path> \
     --outdir results \
@@ -86,13 +86,38 @@ nextflow run main.nf -profile <conda/docker/singularity> \
 `nextflow run main.nf --help` prints the option summary. Add `-resume` to reuse
 cached results after an interruption.
 
+## Assay presets
+
+`--assay {GRO|PRO|ChRO}` sets the library geometry, which then sets presets for 
+other pipeline flags: 
+
+| `--assay` | SE (`--se_read`) | PE (`--rna3` → `--rna5`)      | captures    |
+|-----------|------------------|-------------------------------|-------------|
+| `GRO`     | `RNA_5prime` (`-G`) | `R2_5prime` → `R1_5prime`  | RNA 5′ end  |
+| `PRO`     | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
+| `ChRO`    | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
+
+Any explicit flag (`--se_read`, `--rna3`, `--rna5`, `--map5`, `--opposite_strand`)
+**overrides** the preset. `--map5`/`--opposite_strand` are reporting choices and
+are left at their defaults (`true`/`false`) — the preset does not change them.
+
+These presets are correct for GRO-/PRO-seq and have not been tested for GRO-/PRO-cap.
+
+
 ## Options
 
-| CLI flag (original)      | Nextflow param            | Default                         |
+| Nextflow param             | CLI flag (original)        | Purpose                        | Default            |
+|----------------------------|---------------------------|---------------------------------|--------------------|
+| `--assay {GRO\|PRO\|ChRO}` | NA                        | set geometry for read reporting | none               |
+| `--se_read`                | 
+
+
+
+
+|       | Nextflow param            | Default                         |
 |--------------------------|---------------------------|---------------------------------|
-| `-SE` / `-PE`            | *auto-detected per sample from `fastq_2`* | —              |
-| *(new preset)*           | `--assay {GRO\|PRO\|ChRO}` | none (sets the geometry below) |
-| `-G` / `-P`              | `--se_read`               | `RNA_5prime` (`RNA_3prime`=P)   |
+|
+| `-G` / `-P`              | `--se_read`               | `RNA_3prime` (`-P`; `RNA_5prime`=G) |
 | `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R2_5prime`              |
 | `-5` / `-3` (`--map5`)   | `--map5`                  | `true`                          |
 | `-s`                     | `--opposite_strand`       | `false`                         |
@@ -131,20 +156,7 @@ results/
 └── pipeline_info/  execution report, timeline, trace, DAG
 ```
 
-## Assay presets
 
-`--assay {GRO|PRO|ChRO}` sets the library geometry so you specify the one thing
-you know — the protocol — instead of the low-level flags:
-
-| `--assay` | SE (`--se_read`) | PE (`--rna3` → `--rna5`)      | captures    |
-|-----------|------------------|-------------------------------|-------------|
-| `GRO`     | `RNA_5prime` (`-G`) | `R2_5prime` → `R1_5prime`  | RNA 5′ end  |
-| `PRO`     | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
-| `ChRO`    | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
-
-Any explicit flag (`--se_read`, `--rna3`, `--rna5`, `--map5`, `--opposite_strand`)
-**overrides** the preset. `--map5`/`--opposite_strand` are reporting choices and
-are left at their defaults (`true`/`false`) — the preset does not change them.
 
 ## Strand inference
 
@@ -163,10 +175,9 @@ pipeline still completes; it does not auto-change your settings.
 ## rRNA removal
 
 By default the pipeline removes rRNA the way proseq2.0 does: *after* alignment, by
-dropping reads on contigs named `rRNA`/`chrM` — which only works if the genome
-index actually contains an rDNA contig. Many assemblies (e.g. UCSC dm6/mm10/hg38)
+dropping reads on contigs named `rRNA`/`chrM`. Many assemblies (e.g. UCSC dm6/mm10/hg38)
 do **not** include the nuclear rDNA arrays, so rRNA reads simply fail to map and
-vanish as "unmapped" (and the `Mappable (excl. rRNA)` count barely drops).
+vanish as "unmapped".
 
 For a portable, standard alternative, `--remove_rrna` runs **SortMeRNA** *before*
 alignment to filter reads by sequence against reference rRNA FASTA(s):
@@ -218,6 +229,10 @@ Alignment parameters, adapter/UMI handling, strand logic (all 8 PE cases + the
 
 ## Cite
 
-Chu, T., Wang, Z., Chou, S. P., & Danko, C. G. (2018). *Discovering
-Transcriptional Regulatory Elements From Run-On and Sequencing Data Using the
-Web-Based dREG Gateway.* Current Protocols in Bioinformatics, e70.
+CChu T, Wang Z, Chou SP, Danko CG. *Discovering Transcriptional Regulatory 
+Elements From Run-On and Sequencing Data Using the Web-Based dREG Gateway.* 
+Curr Protoc Bioinformatics. 2019 Jun;66(1):e70. doi: 10.1002/cpbi.70. 
+
+Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame C. 
+*Nextflow enables reproducible computational workflows.* 
+Nat Biotechnol. 2017 Apr 11;35(4):316-319. doi: 10.1038/nbt.3820. 
