@@ -109,7 +109,7 @@ These presets are correct for GRO-/PRO-seq and have not been tested for GRO-/PRO
 | Nextflow param             | CLI flag (original)        | Purpose                        | Default            |
 |----------------------------|---------------------------|---------------------------------|--------------------|
 | `--assay {GRO\|PRO\|ChRO}` | NA                        | set geometry for read reporting | none               |
-| `--se_read`                | 
+| `--se_read {RNA_3prime\|RNA_5prime}`                | `-P` / `-G`               | for single end data, if reporting from 3' (PRO-seq) or 5' (GRO-seq) | RNA_3prime |
 
 
 
@@ -117,8 +117,8 @@ These presets are correct for GRO-/PRO-seq and have not been tested for GRO-/PRO
 |       | Nextflow param            | Default                         |
 |--------------------------|---------------------------|---------------------------------|
 |
-| `-G` / `-P`              | `--se_read`               | `RNA_3prime` (`-P`; `RNA_5prime`=G) |
-| `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R1_5prime` (PRO/ChRO)   |
+| `-G` / `-P`              | `--se_read`               | `RNA_5prime` (`RNA_3prime`=P)   |
+| `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R2_5prime`              |
 | `-5` / `-3` (`--map5`)   | `--map5`                  | `true`                          |
 | `-s`                     | `--opposite_strand`       | `false`                         |
 | `--ADAPT_SE`             | `--adapter_se`            | `TGGAATTCTCGGGTGCCAAGG`         |
@@ -183,12 +183,17 @@ For a portable, standard alternative, `--remove_rrna` runs **SortMeRNA** *before
 alignment to filter reads by sequence against reference rRNA FASTA(s):
 
 ```bash
-nextflow run main.nf ... --remove_rrna --rrna_refs "rRNA_db.fa"
-# multiple refs: --rrna_refs "silva-euk-18s.fa,silva-euk-28s.fa,rfam-5s.fa"
+nextflow run main.nf ... --remove_rrna --rrna_refs <rrna-db-path>
 ```
 
 - `--rrna_refs` takes one or more FASTA files (comma-separated, or a glob). Use an
-  rRNA database (e.g. the SortMeRNA/SILVA sets) or your organism's rRNA sequences.
+  rRNA database (e.g. the SortMeRNA/SILVA sets) or your organism's rRNA sequences. You
+  can download a ready-made database that has rRNA sequences for eukaryotes and prokaryotes
+  using:
+  ```bash
+  wget https://github.com/sortmerna/sortmerna/releases/download/v7.0.0/smr_v4.3_default_db.fasta.gz
+  gunzip smr_v4.3_default_db.fasta.gz
+  ```
 - Paired-end uses `--paired_in` (a pair is dropped if *either* mate is rRNA).
 - Adds a **Post rRNA-removal** column to the read-summary table and feeds the
   SortMeRNA log into MultiQC (`% rRNA`).
