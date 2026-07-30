@@ -109,7 +109,7 @@ Any explicit flag (`--re_start`, `--report`, `--antisense`)
 
 ## Options
 
-| Parameter   |  Purpose                                                     | Default | Options        |
+| Parameter   |  Purpose  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;   | Default | Options        |
 |-------------|--------------------------------------------------------------|---------|----------------|
 | `--assay` |  set geometry for read reporting (see above for details) | none | `{GRO\|PRO\|ChRO\|GROcap\|PROcap`} | 
 | `--read_start` | RNA end sits at the read's (SE) / R1's (PE) 5' end, based on assay. Overrides `--assay` preset | `{rna_3prime\|rna_5prime}` |
