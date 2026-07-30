@@ -65,6 +65,7 @@ def helpMessage() {
       sample,fastq_1,fastq_2
       sampleA,/data/A_R1.fastq.gz,/data/A_R2.fastq.gz   # paired-end
       sampleB,/data/B.fastq.gz,                          # single-end (empty fastq_2)
+      (rows sharing a sample name are concatenated as technical replicates)
 
     Required:
       --input        Samplesheet CSV
@@ -72,14 +73,18 @@ def helpMessage() {
       --chrom_info   chromInfo table (chrom <TAB> size)
 
     Key options (see nextflow.config for all + defaults):
-      Assay: --assay {GRO|PRO|ChRO}   preset that sets the SE/PE geometry below
-      SE:  --se_read {RNA_5prime|RNA_3prime}        (GRO-seq | PRO-seq)
-      PE:  --rna5/--rna3 {R1_5prime|R2_5prime}  --map5 {true|false}  --opposite_strand {true|false}
+      Assay: --assay {GRO|PRO|ChRO}   preset for the SE/PE geometry below
+                                      (default, no assay: PRO/ChRO geometry)
+      SE:  --se_read {RNA_3prime|RNA_5prime}   PRO-seq (-P) | GRO-seq (-G)   [default RNA_3prime]
+      PE:  --rna5/--rna3 {R1_5prime|R2_5prime}   [default --rna3 R1_5prime]
+           --map5 {true|false}   --opposite_strand {true|false}
            (individual flags override --assay)
       UMI: --umi1 N --umi2 N --add_b1 N --add_b2 N --force_deduplicate {true|false}
       Map: --aligner {aln|mem}  --dreg  --map_length N
+      rRNA:--remove_rrna --rrna_refs FILE[,FILE...]   SortMeRNA pre-alignment rRNA depletion
       QC:  --gene_bed FILE   BED12 gene model -> RSeQC strand inference (validate & warn)
            --skip_fastqc  --skip_multiqc
+      Res: --max_cpus N   --max_memory '16.GB'   --max_time '24.h'
     """.stripIndent()
 }
 
