@@ -67,7 +67,7 @@ with the correct genome:
 bin/setup_genome.sh <genome>
 ```
 
-The original pipeline aligned to a reference genome that included the rRNA transcript, then
+The original pipeline aligned to a reference genome that included the rDNA transcript, then
 removed rRNA-matching reads after-the-fact. That is still possible here; however, rRNA can
 instead be removed using SortMeRNA prior to alignment.
 
@@ -79,7 +79,7 @@ nextflow run main.nf -profile <conda/docker/singularity> \
     --bwa_index <bwa-path> \
     --chrom_info <chrom_info-path> \
     --outdir results \
-    --assay <PRO/GRO/ChRO> --umi1 <n>
+    --assay <PRO/GRO/ChRO|PROcap|GROcap> 
 
 ```
 
@@ -88,54 +88,50 @@ cached results after an interruption.
 
 ## Assay presets
 
-`--assay {GRO|PRO|ChRO}` sets the library geometry, which then sets presets for 
-other pipeline flags: 
+`--assay {GRO|PRO|ChRO|PROcap|GROcap}` sets the library geometry, which then sets presets for 
+other pipeline flags. These are based on published methods for creating these types of libraries:
+- GRO-seq: captures the active site of Pol II at the 5' end of the RNA (see [Core et al, 2008](https://www.science.org/doi/10.1126/science.1162228))
+- GRO-cap: captures the TSS of the RNA at the 5' end (see [Core et al, 2014](https://www.nature.com/articles/ng.3142))
+- PRO-/ and ChRO-seq: captures the active site of Pol II at the 3' end of the RNA (see [Kwak et al, 2013](https://www.science.org/doi/10.1126/science.1229386) and [Chu et al, 2018](https://www.nature.com/articles/s41588-018-0244-3))
+- PRO-cap: captures the TSS of the RNA at the 5' end (see [Kwak et al, 2013](https://www.science.org/doi/10.1126/science.1229386))
 
-| `--assay` | SE (`--se_read`) | PE (`--rna3` → `--rna5`)      | captures    |
-|-----------|------------------|-------------------------------|-------------|
-| `GRO`     | `RNA_5prime` (`-G`) | `R2_5prime` → `R1_5prime`  | RNA 5′ end  |
-| `PRO`     | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
-| `ChRO`    | `RNA_3prime` (`-P`) | `R1_5prime` → `R2_5prime`  | RNA 3′ end  |
+| `--assay` | `--read_start` | `--report` | `--antisense` |
+|-----------|------------------|-----------|--------- |
+| `GRO`     | `rna_5prime` | `rna_5prime` | false |
+| `GROcap`     | `rna_5prime` | `rna_5prime` |  false |
+| `PRO`     | `rna_3prime` | `rna_3prime` | false |
+| `PROcap`     | `rna_5prime` |`rna_5prime` |  false |
+| `ChRO`    | `rna_3prime`  | `rna_3prime` | false |
 
-Any explicit flag (`--se_read`, `--rna3`, `--rna5`, `--map5`, `--opposite_strand`)
-**overrides** the preset. `--map5`/`--opposite_strand` are reporting choices and
-are left at their defaults (`true`/`false`) — the preset does not change them.
-
-These presets are correct for GRO-/PRO-seq and have not been tested for GRO-/PRO-cap.
+Any explicit flag (`--re_start`, `--report`, `--antisense`) 
+**overrides** the preset. 
 
 
 ## Options
 
-| Nextflow param             | CLI flag (original)        | Purpose                        | Default            |
-|----------------------------|---------------------------|---------------------------------|--------------------|
-| `--assay {GRO\|PRO\|ChRO}` | NA                        | set geometry for read reporting | none               |
-| `--se_read {RNA_3prime\|RNA_5prime}`                | `-P` / `-G`               | for single end data, if reporting from 3' (PRO-seq) or 5' (GRO-seq) | RNA_3prime |
+| Parameter   |  Purpose         | Default            | Options |
+|------------------|------------------|--------------------|---------|
+| `--assay` |  set geometry for read reporting (see above for details) | none | `{GRO\|PRO\|ChRO\|GROcap\|PROcap`} | 
+| `--read_start` | RNA end sits at the read's (SE) / R1's (PE) 5' end, based on assay. Overrides `--assay` preset | `{rna_3prime\|rna_5prime}` |
+| `--report` | paired-end only; sets the RNA end to record in bigWigs; both is useful for PRO-cap where TSS and active site can be captured | `--read_start` parameter | `{rna_3prime\|rna_5prime\|both}`} |
+| `--antisense` | report on the opposite (antisense) strand | `false` | `{false\|true}` |
+| `--adapter_se` | Adapter sequence trimmed in single-end sequencing | `'TGGAATTCTCGGGTGCCAAGG'` | string of adapter sequence |
+| `--adapter1` | Adapter sequence trimmed from R2 | `'GATCGTCGGACTGTAGAACTCTGAACG'` | `string` of adapter sequence |
+| `--adapter2` | Adapter sequence trimmed from R1 | `'AGATCGGAAGAGCACACGTCTGAACTC'` | `string` of adapter sequence |
+| `--umi1` | length of UMI on R1 | 0 | `integer` of UMI length |
+| `--umi2` | length of UMI on R2 | 0 | `integer` of UMI length |
+| `--add_b1` | extra barcode trimmed from R1 | 0 | `integer` of length to trim |
+| `--add_b2` | extra barcode trimmed from R2 | 0 | `integer` of length to trim |
+| `--force_deduplicate` | deduplicate in absence of UMIs | `false` | `{false\|true}` |
+| `--aligner` |choice between BWA-backtrack (`aln`) or BWA-mem (`mem`) | SE->`aln`, PE->`mem`| `{aln\|mem}` |
+| `--dreg` | use dREG-compatible parameters, only for SE | `false` | `{false\|true}` |
+| `--map_length` | align whole read (0) or set a data-set wide length cutoff for mapping (other integer) | 0 | `integer` of read-length to align |
+| `--skip_fastqc` | Don't run FastQC on raw and trimmed reads | `false` | `{false\|true}` |
+| `--skip_multiqc` | Don't run MultiQC at end of run | `false` | `{false\|true}` |
+| `--gene_bed` | when set, run RSeQC strand inference and warn if it doesn't match configured strand | `null` | path to BED12 gene model for your species |
+| `--remove_rrna` | Run pre-alignment rRNA depletion | `false` | `{false\|true}` |
+| `--rrna_refs` | Required when running `--remove_rna` | `null` | path to rRNA reference FASTA(s) |
 
-
-
-
-|       | Nextflow param            | Default                         |
-|--------------------------|---------------------------|---------------------------------|
-|
-| `-G` / `-P`              | `--se_read`               | `RNA_5prime` (`RNA_3prime`=P)   |
-| `--RNA5` / `--RNA3`      | `--rna5` / `--rna3`       | `--rna3 R2_5prime`              |
-| `-5` / `-3` (`--map5`)   | `--map5`                  | `true`                          |
-| `-s`                     | `--opposite_strand`       | `false`                         |
-| `--ADAPT_SE`             | `--adapter_se`            | `TGGAATTCTCGGGTGCCAAGG`         |
-| `--ADAPT1` / `--ADAPT2`  | `--adapter1` / `--adapter2` | original defaults             |
-| `--UMI1` / `--UMI2`      | `--umi1` / `--umi2`       | `0`                             |
-| `--ADD_B1` / `--ADD_B2`  | `--add_b1` / `--add_b2`   | `0`                             |
-| `--Force_deduplicate`    | `--force_deduplicate`     | `false`                         |
-| `-aln` / `-mem`          | `--aligner {aln\|mem}`    | SE→`aln`, PE→`mem`              |
-| `-4DREG`                 | `--dreg`                  | `false` (SE only)               |
-| `--MAP_LENGTH`           | `--map_length`            | `0` (off)                       |
-| *(new)*                  | `--skip_fastqc`           | `false`                         |
-| *(new)*                  | `--skip_multiqc`          | `false`                         |
-| *(new)*                  | `--gene_bed`              | none (enables strand inference) |
-| *(new)*                  | `--remove_rrna`           | `false`                         |
-| *(new)*                  | `--rrna_refs`             | none (required with `--remove_rrna`) |
-| `--thread`               | *per-process `task.cpus`* | via resource labels             |
-| `-T` / `-O`              | Nextflow `work/` / `--outdir` | `./results`                 |
 
 Resource ceilings: `--max_cpus`, `--max_memory`, `--max_time`. On a laptop,
 lower them (e.g. `--max_memory '8.GB' --max_cpus 4`).
@@ -234,7 +230,7 @@ Alignment parameters, adapter/UMI handling, strand logic (all 8 PE cases + the
 
 ## Cite
 
-CChu T, Wang Z, Chou SP, Danko CG. *Discovering Transcriptional Regulatory 
+Chu T, Wang Z, Chou SP, Danko CG. *Discovering Transcriptional Regulatory 
 Elements From Run-On and Sequencing Data Using the Web-Based dREG Gateway.* 
 Curr Protoc Bioinformatics. 2019 Jun;66(1):e70. doi: 10.1002/cpbi.70. 
 
