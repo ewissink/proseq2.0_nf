@@ -155,10 +155,11 @@ run_nf() {  # $1=name $2=layout ; uses NF_FLAGS
 # Match by CONTENT, not filename: the original leaves a spurious _QC / _QC_end in
 # its output names (fragile name-mangling in proseq2.0.bsh), while the port names
 # them <sample>_<strand>.bw. So glob each side's raw (non-.rpm) bigWig for the strand.
-compare_bw() {  # $1=name $2=strand(plus|minus) ; appends a row to $SUMMARY
-  local name="$1" s="$2" a b
-  a=$(ls "$OUTDIR/$name/bash/"*_"${s}.bw" 2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
-  b=$(ls "$OUTDIR/$name/nf/results/bigwig/"*_"${s}.bw" 2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
+compare_bw() {  # $1=name $2=bash_strand(plus|minus) $3=nf_strand(fwd|rev) ; appends a row to $SUMMARY
+  local name="$1" s="$2" nf="$3" a b
+  # bash names strands plus/minus; the port renames them fwd/rev (PINTS-style)
+  a=$(ls "$OUTDIR/$name/bash/"*_"${s}.bw"  2>/dev/null | grep -v '\.rpm\.bw$' | head -1)
+  b=$(ls "$OUTDIR/$name/nf/results/bigwig/"*_"${nf}.bw" 2>/dev/null | grep -vE '\.(rpm|subsample)\.bw$' | head -1)
   if [ -z "$a" ] || [ -z "$b" ]; then
     printf "    %-6s MISSING (bash:%s nf:%s)\n" "$s" "$( [ -n "$a" ] && echo ok || echo -- )" "$( [ -n "$b" ] && echo ok || echo -- )"
     printf '%s\tMISSING\t0\t0\t0\n' "${name}_${s}" >> "$SUMMARY"
@@ -213,8 +214,8 @@ while read -r name assay layout accession report strand || [ -n "${name:-}" ]; d
   run_bash "$name" "$layout"
   run_nf   "$name" "$layout"
   echo "  concordance:"
-  compare_bw "$name" plus  || fails=$((fails+1))
-  compare_bw "$name" minus || fails=$((fails+1))
+  compare_bw "$name" plus  fwd || fails=$((fails+1))
+  compare_bw "$name" minus rev || fails=$((fails+1))
   echo
 done < "$DATASETS"
 

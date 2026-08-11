@@ -53,7 +53,8 @@ gzip -dc "$FA" \
 echo "   $(wc -l < "$CHROMINFO") sequences"
 
 echo ">> Building BWA index (this is the slow part) ..."
-[ -s "${FA}.bwt" ] || bwa index "$FA"
+# check .sa (the LAST file bwa writes) so an interrupted build is rebuilt, not skipped
+[ -s "${FA}.sa" ] || bwa index "$FA"
 
 echo
 echo "Done. Pass these to the pipeline (or the test harness):"

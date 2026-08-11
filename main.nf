@@ -13,7 +13,10 @@ include { SORTMERNA_SE  } from './modules/local/sortmerna_se'
 include { SORTMERNA_PE  } from './modules/local/sortmerna_pe'
 include { BWA_ALIGN_SE  } from './modules/local/bwa_align_se'
 include { BWA_ALIGN_PE  } from './modules/local/bwa_align_pe'
-include { MAKE_BIGWIG   } from './modules/local/make_bigwig'
+include { COUNT_READS   } from './modules/local/count_reads'
+include { SUBSAMPLE_BAM } from './modules/local/subsample_bam'
+include { MAKE_BIGWIG                    } from './modules/local/make_bigwig'
+include { MAKE_BIGWIG as MAKE_BIGWIG_SUB } from './modules/local/make_bigwig'
 include { DETECT_ADAPTER_SE } from './modules/local/detect_adapter_se'
 include { DETECT_ADAPTER_PE } from './modules/local/detect_adapter_pe'
 include { FASTQC as FASTQC_RAW  } from './modules/local/fastqc'
@@ -79,6 +82,9 @@ def helpMessage() {
              (--read_start/--report/--antisense override --assay)
       UMI: --umi1 N --umi2 N --add_b1 N --add_b2 N --force_deduplicate {true|false}
       Map: --aligner {aln|mem}  --dreg  --map_length N
+      Norm: raw + RPM bigWigs always emitted (<sample>_fwd.bw / _rev.bw, _*.rpm.bw)
+            --subsample_norm   also emit *.subsample.bw (all samples downsampled to
+                               the shallowest, by mapped reads)  --subsample_seed N
       rRNA:--remove_rrna --rrna_refs FILE[,FILE...]   SortMeRNA pre-alignment rRNA depletion
       QC:  --gene_bed FILE   BED12 gene model -> RSeQC strand inference (validate & warn)
            --skip_adapter_detect   (fastp adapter detection, validate-and-warn; on by default)
@@ -101,6 +107,13 @@ workflow {
         error "--dreg is only compatible with bwa aln (do not combine with --aligner mem)."
     if (params.remove_rrna && !params.rrna_refs)
         error "--remove_rrna requires --rrna_refs (rRNA FASTA file(s): comma-separated list or a glob)."
+    // BWA index must be complete — .sa is written last, so an interrupted build lacks it
+    ['amb', 'ann', 'bwt', 'pac', 'sa'].each { ext ->
+        if (!file("${params.bwa_index}.${ext}").exists())
+            error "BWA index incomplete: missing ${params.bwa_index}.${ext}\n" +
+                  "  Rebuild it: rm -f ${params.bwa_index}.{amb,ann,bwt,pac,sa} && bwa index ${params.bwa_index}\n" +
+                  "  (the .sa file is written last, so an interrupted build leaves it missing)"
+    }
 
     // --- reference channels ---
     ch_index      = Channel.fromPath("${params.bwa_index}*", checkIfExists: true).collect()
@@ -204,9 +217,19 @@ workflow {
     BWA_ALIGN_SE( ch_se_to_align, ch_index, bwa_prefix )
     BWA_ALIGN_PE( ch_pe_to_align, ch_index, bwa_prefix )
 
-    // --- bigWigs (shared) ---
+    // --- bigWigs: raw + RPM (fwd/rev) from each sample's own BAM ---
     ch_bams = BWA_ALIGN_SE.out.bam.mix( BWA_ALIGN_PE.out.bam )
-    MAKE_BIGWIG( ch_bams, ch_chrom_info )
+    MAKE_BIGWIG( ch_bams, ch_chrom_info, 'standard' )
+
+    // --- optional subsample-normalized bigWigs: downsample every sample to the
+    //     shallowest (by mapped reads), then emit *.subsample.bw ---
+    if (params.subsample_norm) {
+        COUNT_READS( ch_bams )
+        ch_counted = COUNT_READS.out.counts.map { meta, bam, c -> [ meta, bam, c.trim() as long ] }
+        ch_min     = ch_counted.map { meta, bam, c -> c }.min()
+        SUBSAMPLE_BAM( ch_counted.combine( ch_min ) )
+        MAKE_BIGWIG_SUB( SUBSAMPLE_BAM.out.bam, ch_chrom_info, 'subsample' )
+    }
 
     // --- QC: FastQC (raw + trimmed) and MultiQC ---
     ch_multiqc = Channel.empty()

@@ -10,12 +10,13 @@ process MAKE_BIGWIG {
     input:
     tuple val(meta), path(bam)
     path  chrom_info
+    val   norm            // 'standard' (raw + rpm) | 'subsample' (.subsample track only)
 
     output:
     path "*.bw",                   emit: bw
-    path "${meta.id}.align.log",   emit: log
-    path "${meta.id}.map.metrics", emit: metrics
-    path "${meta.id}.sort.bam"
+    path "${meta.id}.align.log",   emit: log,     optional: true
+    path "${meta.id}.map.metrics", emit: metrics, optional: true
+    path "${meta.id}.sort.bam", optional: true
 
     script:
     def prefix = meta.id
@@ -26,18 +27,14 @@ process MAKE_BIGWIG {
     def report = meta.report ?: 'rna_3prime'
     """
     set -eu
-    echo "${prefix}" > ${prefix}.align.log
-
-    # keep a copy of the sorted BAM (same name) for publishing
-    if [ "${bam}" != "${prefix}.sort.bam" ]; then cp "${bam}" "${prefix}.sort.bam"; fi
 
     # gen_bed <map5 TRUE|FALSE> <out.bed.gz> : single-base BED of one reported RNA end
     gen_bed() {
         local map5="\$1" out="\$2"
         if [ "${single}" = "true" ]; then
-            if [ "${se_out}" = "G" ]; then   # report read 5' end, same strand
+            if [ "${se_out}" = "G" ]; then
                 bedtools bamtobed -i ${bam} 2> kill.warnings | awk 'BEGIN{OFS="\\t"} (\$5>0){print \$0}' | awk 'BEGIN{OFS="\\t"} (\$6=="+"){print \$1,\$2,\$2+1,\$4,\$5,\$6}; (\$6=="-"){print \$1,\$3-1,\$3,\$4,\$5,\$6}' | gzip > "\$out"
-            else                             # report read 5' end, strand flipped
+            else
                 bedtools bamtobed -i ${bam} 2> kill.warnings | awk 'BEGIN{OFS="\\t"} (\$5>0){print \$0}' | awk 'BEGIN{OFS="\\t"} (\$6=="+"){print \$1,\$2,\$2+1,\$4,\$5,"-"}; (\$6=="-"){print \$1,\$3-1,\$3,\$4,\$5,"+"}' | gzip > "\$out"
             fi
         elif [ "${rna5}" = "R1_5prime" ]; then
@@ -71,7 +68,7 @@ process MAKE_BIGWIG {
         fi
     }
 
-    # metrics_from <raw.bed.gz> : write align.log counts + map.metrics from one track
+    # metrics_from <raw.bed.gz> : align.log counts + map.metrics (standard runs only)
     metrics_from() {
         local bed="\$1" MAP RC
         MAP=\$(zcat "\$bed" | wc -l)
@@ -85,51 +82,67 @@ process MAKE_BIGWIG {
         rm -f _metrics.nr.rs.bed.gz
     }
 
-    # emit_track <raw.bed.gz> <label> : rRNA/chrM filter -> raw + RPM plus/minus bigWigs
+    # emit_track <raw.bed.gz> <endlabel> : fwd/rev bigWigs (raw + rpm, or .subsample)
     emit_track() {
-        local bed="\$1" lab="\$2" RC
+        local bed="\$1" end="\$2" RC
         zcat "\$bed" | grep "rRNA\\|chrM" -v | grep "_" -v | sort-bed - | gzip > _track.nr.rs.bed.gz
         RC=\$(zcat _track.nr.rs.bed.gz | wc -l)
-        bedtools genomecov -bg -i _track.nr.rs.bed.gz -g ${chrom_info} -strand + > _p.bedGraph
-        bedtools genomecov -bg -i _track.nr.rs.bed.gz -g ${chrom_info} -strand - > _m.noinv.bedGraph
-        awk 'BEGIN{OFS="\\t"} {print \$1,\$2,\$3,-1*\$4}' _m.noinv.bedGraph > _m.bedGraph
-        awk 'BEGIN{OFS="\\t"} {print \$1,\$2,\$3,\$4*1000*1000/'\$RC'/1}' _p.bedGraph > _p.rpm.bedGraph
-        awk 'BEGIN{OFS="\\t"} {print \$1,\$2,\$3,\$4*1000*1000/'\$RC'/1}' _m.bedGraph > _m.rpm.bedGraph
-        bedGraphToBigWig _p.rpm.bedGraph ${chrom_info} ${prefix}\${lab}_plus.rpm.bw
-        bedGraphToBigWig _m.rpm.bedGraph ${chrom_info} ${prefix}\${lab}_minus.rpm.bw
-        bedGraphToBigWig _p.bedGraph     ${chrom_info} ${prefix}\${lab}_plus.bw
-        bedGraphToBigWig _m.bedGraph     ${chrom_info} ${prefix}\${lab}_minus.bw
-        rm -f _track.nr.rs.bed.gz _p.bedGraph _m.noinv.bedGraph _m.bedGraph _p.rpm.bedGraph _m.rpm.bedGraph
+        bedtools genomecov -bg -i _track.nr.rs.bed.gz -g ${chrom_info} -strand + > _fwd.bedGraph
+        bedtools genomecov -bg -i _track.nr.rs.bed.gz -g ${chrom_info} -strand - > _rev.noinv.bedGraph
+        awk 'BEGIN{OFS="\\t"} {print \$1,\$2,\$3,-1*\$4}' _rev.noinv.bedGraph > _rev.bedGraph
+        if [ "${norm}" = "subsample" ]; then
+            bedGraphToBigWig _fwd.bedGraph ${chrom_info} ${prefix}\${end}_fwd.subsample.bw
+            bedGraphToBigWig _rev.bedGraph ${chrom_info} ${prefix}\${end}_rev.subsample.bw
+        else
+            bedGraphToBigWig _fwd.bedGraph ${chrom_info} ${prefix}\${end}_fwd.bw
+            bedGraphToBigWig _rev.bedGraph ${chrom_info} ${prefix}\${end}_rev.bw
+            awk 'BEGIN{OFS="\\t"} {print \$1,\$2,\$3,\$4*1000*1000/'\$RC'/1}' _fwd.bedGraph > _fwd.rpm.bedGraph
+            awk 'BEGIN{OFS="\\t"} {print \$1,\$2,\$3,\$4*1000*1000/'\$RC'/1}' _rev.bedGraph > _rev.rpm.bedGraph
+            bedGraphToBigWig _fwd.rpm.bedGraph ${chrom_info} ${prefix}\${end}_fwd.rpm.bw
+            bedGraphToBigWig _rev.rpm.bedGraph ${chrom_info} ${prefix}\${end}_rev.rpm.bw
+        fi
+        rm -f _track.nr.rs.bed.gz _fwd.bedGraph _rev.noinv.bedGraph _rev.bedGraph _fwd.rpm.bedGraph _rev.rpm.bedGraph
     }
 
-    # --- decide which track(s) to emit ---
+    # standard runs write the align.log + a copy of the sorted BAM; subsample runs don't
+    if [ "${norm}" != "subsample" ]; then
+        echo "${prefix}" > ${prefix}.align.log
+        if [ "${bam}" != "${prefix}.sort.bam" ]; then cp "${bam}" "${prefix}.sort.bam"; fi
+    fi
+
     if [ "${single}" = "true" ]; then
-        gen_bed TRUE ${prefix}.bed.gz          # SE always reports the read 5' end
-        metrics_from ${prefix}.bed.gz
-        emit_track   ${prefix}.bed.gz ""
+        gen_bed TRUE ${prefix}.bed.gz
+        [ "${norm}" != "subsample" ] && metrics_from ${prefix}.bed.gz || true
+        emit_track ${prefix}.bed.gz ""
     elif [ "${report}" = "both" ]; then
         gen_bed TRUE  ${prefix}.5prime.bed.gz
         gen_bed FALSE ${prefix}.3prime.bed.gz
-        metrics_from ${prefix}.5prime.bed.gz   # read/pair count is the same for either end
-        emit_track   ${prefix}.5prime.bed.gz "_5prime"
-        emit_track   ${prefix}.3prime.bed.gz "_3prime"
+        [ "${norm}" != "subsample" ] && metrics_from ${prefix}.5prime.bed.gz || true
+        emit_track ${prefix}.5prime.bed.gz "_5prime"
+        emit_track ${prefix}.3prime.bed.gz "_3prime"
     else
         if [ "${report}" = "rna_5prime" ]; then M=TRUE; else M=FALSE; fi
         gen_bed \$M ${prefix}.bed.gz
-        metrics_from ${prefix}.bed.gz
-        emit_track   ${prefix}.bed.gz ""
+        [ "${norm}" != "subsample" ] && metrics_from ${prefix}.bed.gz || true
+        emit_track ${prefix}.bed.gz ""
     fi
     """
 
     stub:
     def prefix = meta.id
     def both   = (!meta.single_end && meta.report == 'both')
-    def labels = both ? ['_5prime', '_3prime'] : ['']
+    def ends   = both ? ['_5prime', '_3prime'] : ['']
     """
-    for lab in ${labels.collect{ "\"${it}\"" }.join(' ')}; do
-        touch ${prefix}\${lab}_plus.bw ${prefix}\${lab}_minus.bw ${prefix}\${lab}_plus.rpm.bw ${prefix}\${lab}_minus.rpm.bw
+    for end in ${ends.collect{ "\"${it}\"" }.join(' ')}; do
+        if [ "${norm}" = "subsample" ]; then
+            touch ${prefix}\${end}_fwd.subsample.bw ${prefix}\${end}_rev.subsample.bw
+        else
+            touch ${prefix}\${end}_fwd.bw ${prefix}\${end}_rev.bw ${prefix}\${end}_fwd.rpm.bw ${prefix}\${end}_rev.rpm.bw
+        fi
     done
-    touch ${prefix}.align.log ${prefix}.sort.bam
-    printf 'sample\\t%s\\nmappable\\t0\\nmappable_no_rrna\\t0\\n' "${prefix}" > ${prefix}.map.metrics
+    if [ "${norm}" != "subsample" ]; then
+        touch ${prefix}.align.log ${prefix}.sort.bam
+        printf 'sample\\t%s\\nmappable\\t0\\nmappable_no_rrna\\t0\\n' "${prefix}" > ${prefix}.map.metrics
+    fi
     """
 }
