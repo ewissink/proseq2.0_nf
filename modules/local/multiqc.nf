@@ -12,8 +12,10 @@ process MULTIQC {
     path "multiqc_data",        emit: data
 
     script:
+    // default output is already multiqc_report.html + multiqc_data/; passing -n
+    // renames the data dir to <name>_data, which broke the declared output.
     """
-    multiqc -f -n multiqc_report.html .
+    multiqc -f .
     """
 
     stub:
