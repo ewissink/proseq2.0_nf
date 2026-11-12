@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:1.5.10
+FROM docker.io/mambaorg/micromamba:1.5.10
 
 LABEL description="proseq2.0-nf pipeline tools (built from env/environment.yml)"
 
