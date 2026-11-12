@@ -208,8 +208,90 @@ coordinate filter still applies as a backstop.
 
 `-profile conda | mamba | docker | singularity | slurm` (combine with commas,
 e.g. `-profile singularity,slurm`). `conda`/`mamba` build the env from
-`env/environment.yml`. For docker/singularity, set a container in a custom
-config or `process.container`.
+`env/environment.yml`. `docker`/`singularity` run every process in the image
+given by `--container` (default `ewissink/proseq2.0-nf:2.0.0`).
+
+## Containers
+
+The image is defined by [`Dockerfile`](Dockerfile), which installs
+`env/environment.yml` — so conda, Docker and Singularity all use identical tool
+versions.
+
+### Build with Docker
+
+```bash
+docker build --platform linux/amd64 -t ewissink/proseq2.0-nf:2.0.0 .
+```
+
+(`--platform linux/amd64` is needed on Apple Silicon; several bioconda tools
+have no arm64 builds.) Quick check:
+
+```bash
+docker run --rm ewissink/proseq2.0-nf:2.0.0 bash -c "cutadapt --version && samtools --version | head -1"
+```
+
+Run the pipeline:
+
+```bash
+nextflow run main.nf -profile docker --input samples.csv ...
+# a different/local tag:
+nextflow run main.nf -profile docker --container my-image:tag ...
+```
+
+### Build with Singularity / Apptainer
+
+Singularity cannot build from a Dockerfile directly. Either pull the pushed
+image:
+
+```bash
+singularity pull proseq2.0-nf.sif docker://ewissink/proseq2.0-nf:2.0.0
+```
+
+or convert a local Docker image (no registry needed):
+
+```bash
+singularity build proseq2.0-nf.sif docker-daemon://ewissink/proseq2.0-nf:2.0.0
+```
+
+Then run (a `.sif` path or a `docker://` reference both work for `--container`;
+a bare registry name is auto-prefixed with `docker://` and cached in
+`NXF_SINGULARITY_CACHEDIR`):
+
+```bash
+nextflow run main.nf -profile singularity --container $PWD/proseq2.0-nf.sif --input samples.csv ...
+```
+
+On an HPC, build the `.sif` on a machine where you have build rights (or pull it
+on a login node) and point `--container` at it on shared storage.
+
+### Sharing the Docker image
+
+**Registry (recommended).** Log in, then tag and push:
+
+```bash
+docker login                                   # Docker Hub; use `docker login ghcr.io` for GHCR
+docker push ewissink/proseq2.0-nf:2.0.0
+docker tag  ewissink/proseq2.0-nf:2.0.0 ewissink/proseq2.0-nf:latest
+docker push ewissink/proseq2.0-nf:latest
+```
+
+For GitHub Container Registry, name the image `ghcr.io/<owner>/proseq2.0-nf:2.0.0`
+and pass `--container ghcr.io/<owner>/proseq2.0-nf:2.0.0`. Make the package
+public so others can pull without credentials. Collaborators then just run
+`-profile docker` / `-profile singularity` and Nextflow pulls the image.
+
+**Without a registry.** Export to a file and send it:
+
+```bash
+docker save ewissink/proseq2.0-nf:2.0.0 | gzip > proseq2.0-nf_2.0.0.tar.gz
+# recipient:
+gunzip -c proseq2.0-nf_2.0.0.tar.gz | docker load
+```
+
+**Rebuild from source.** Anyone with this repo can run the `docker build`
+command above; the `Dockerfile` and `env/environment.yml` are all that is needed.
+Pin the tag to the pipeline version (`-r`/`manifest.version`) so results stay
+reproducible.
 
 ## Testing without data
 
