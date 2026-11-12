@@ -217,6 +217,23 @@ The image is defined by [`Dockerfile`](Dockerfile), which installs
 `env/environment.yml` — so conda, Docker and Singularity all use identical tool
 versions.
 
+### Pre-built image (no build needed)
+
+A ready-to-use image is published on Docker Hub:
+[`wissinke/proseq2.0-nf`](https://hub.docker.com/r/wissinke/proseq2.0-nf)
+(linux/amd64). With `-profile docker` or `-profile singularity`, Nextflow pulls
+it automatically. To pull it yourself:
+
+```bash
+# Docker
+docker pull wissinke/proseq2.0-nf:2.0.0
+
+# Singularity / Apptainer (writes proseq2.0-nf.sif)
+singularity pull proseq2.0-nf.sif docker://wissinke/proseq2.0-nf:2.0.0
+```
+
+The sections below are only needed if you want to build the image yourself.
+
 ### Build with Docker
 
 ```bash
