@@ -209,7 +209,7 @@ coordinate filter still applies as a backstop.
 `-profile conda | mamba | docker | singularity | slurm` (combine with commas,
 e.g. `-profile singularity,slurm`). `conda`/`mamba` build the env from
 `env/environment.yml`. `docker`/`singularity` run every process in the image
-given by `--container` (default `ewissink/proseq2.0-nf:2.0.0`).
+given by `--container` (default `wissinke/proseq2.0-nf:2.0.0`).
 
 ## Containers
 
@@ -217,17 +217,34 @@ The image is defined by [`Dockerfile`](Dockerfile), which installs
 `env/environment.yml` — so conda, Docker and Singularity all use identical tool
 versions.
 
+### Pre-built image (no build needed)
+
+A ready-to-use image is published on Docker Hub:
+[`wissinke/proseq2.0-nf`](https://hub.docker.com/r/wissinke/proseq2.0-nf)
+(linux/amd64). With `-profile docker` or `-profile singularity`, Nextflow pulls
+it automatically. To pull it yourself:
+
+```bash
+# Docker
+docker pull wissinke/proseq2.0-nf:2.0.0
+
+# Singularity / Apptainer (writes proseq2.0-nf.sif)
+singularity pull proseq2.0-nf.sif docker://wissinke/proseq2.0-nf:2.0.0
+```
+
+The sections below are only needed if you want to build the image yourself.
+
 ### Build with Docker
 
 ```bash
-docker build --platform linux/amd64 -t ewissink/proseq2.0-nf:2.0.0 .
+docker build --platform linux/amd64 -t wissinke/proseq2.0-nf:2.0.0 .
 ```
 
 (`--platform linux/amd64` is needed on Apple Silicon; several bioconda tools
 have no arm64 builds.) Quick check:
 
 ```bash
-docker run --rm ewissink/proseq2.0-nf:2.0.0 bash -c "cutadapt --version && samtools --version | head -1"
+docker run --rm wissinke/proseq2.0-nf:2.0.0 bash -c "cutadapt --version && samtools --version | head -1"
 ```
 
 Run the pipeline:
@@ -244,13 +261,13 @@ Singularity cannot build from a Dockerfile directly. Either pull the pushed
 image:
 
 ```bash
-singularity pull proseq2.0-nf.sif docker://ewissink/proseq2.0-nf:2.0.0
+singularity pull proseq2.0-nf.sif docker://wissinke/proseq2.0-nf:2.0.0
 ```
 
 or convert a local Docker image (no registry needed):
 
 ```bash
-singularity build proseq2.0-nf.sif docker-daemon://ewissink/proseq2.0-nf:2.0.0
+singularity build proseq2.0-nf.sif docker-daemon://wissinke/proseq2.0-nf:2.0.0
 ```
 
 Then run (a `.sif` path or a `docker://` reference both work for `--container`;
@@ -270,9 +287,9 @@ on a login node) and point `--container` at it on shared storage.
 
 ```bash
 docker login                                   # Docker Hub; use `docker login ghcr.io` for GHCR
-docker push ewissink/proseq2.0-nf:2.0.0
-docker tag  ewissink/proseq2.0-nf:2.0.0 ewissink/proseq2.0-nf:latest
-docker push ewissink/proseq2.0-nf:latest
+docker push wissinke/proseq2.0-nf:2.0.0
+docker tag  wissinke/proseq2.0-nf:2.0.0 wissinke/proseq2.0-nf:latest
+docker push wissinke/proseq2.0-nf:latest
 ```
 
 For GitHub Container Registry, name the image `ghcr.io/<owner>/proseq2.0-nf:2.0.0`
@@ -283,7 +300,7 @@ public so others can pull without credentials. Collaborators then just run
 **Without a registry.** Export to a file and send it:
 
 ```bash
-docker save ewissink/proseq2.0-nf:2.0.0 | gzip > proseq2.0-nf_2.0.0.tar.gz
+docker save wissinke/proseq2.0-nf:2.0.0 | gzip > proseq2.0-nf_2.0.0.tar.gz
 # recipient:
 gunzip -c proseq2.0-nf_2.0.0.tar.gz | docker load
 ```
